@@ -259,7 +259,7 @@ st.markdown("""
 <div class="hero">
     <div class="hero-content">
         <div class="logo-circle">
-    <img src="https://raw.githubusercontent.com/tecnologiacafeeira/procafe-ia/main/assets/logo.png" class="logo-img">
+    <img src="https://github.com/tecnologiacafeeira/procafe-ia/blob/main/assets/logo.png?raw=true" class="logo-img">
 </div>
         <div>
             <h1>FUNDAÇÃO PROCAFÉ</h1>
