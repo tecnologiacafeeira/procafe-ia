@@ -108,9 +108,7 @@ def interpretar_v(valor):
 def analisar_pdf(pdf_path):
     texto_total = ""
 
-    extensao = pdf_path.split(".")[-1].lower()
-
-    if extensao != "pdf":
+    if pdf_path.split(".")[-1].lower() != "pdf":
         return []
 
     doc = fitz.open(pdf_path)
@@ -118,73 +116,97 @@ def analisar_pdf(pdf_path):
     for pagina in doc:
         texto_total += pagina.get_text("text") + "\n"
 
-    linhas = [
-        linha.strip()
-        for linha in texto_total.split("\n")
-        if linha.strip()
-    ]
+    texto_total = " ".join(texto_total.split())
 
     dados = []
 
-    for i, linha in enumerate(linhas):
-        if re.match(r"^\d{2}-", linha):
+    padrao = re.compile(
+        r"(\d+[,.]\d+)\s+"      # Ca
+        r"(\d+[,.]\d+)\s+"      # Al
+        r"(\d+[,.]\d+)\s+"      # T
+        r"(\d+[,.]\d+)\s+"      # V
+        r"(\d{5})\s+"           # Amostra
+        r"(\d+[,.]\d+)\s+"      # Ca/T
+        r"(.+?)\s+"             # Identificação
+        r"(\d{2,4})\s+"         # K
+        r"(\d+[,.]\d+)\s+"      # Mg
+        r"(\d+[,.]\d+)\s+"      # H+Al
+        r"(\d+[,.]\d+)\s+"      # Mg/T
+        r"(\d+[,.]\d+)\s+"      # K/T
+        r"(\d+[,.]\d+)\s+"      # m
+        r"(\d+[,.]\d+)\s+"      # pH H2O
+        r"(\d+[,.]\d+)\s+"
+        r"(?:X\.XX|\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(?:X\.XX|\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(?:X\.XX|\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(?:X\.XX|\d+[,.]\d+)\s+"
+        r"(?:X\.XX|\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(?:X\.XX|\d+[,.]\d+)\s+"
+        r"(?:X\.XX|\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(\d+[,.]\d+|X\.XX)\s+"
+        r"(\d+[,.]\d+|X\.XX)"
+    )
 
-            valores_antes = linhas[max(0, i - 6):i]
-            valores_depois = linhas[i + 1:i + 20]
+    for m in padrao.finditer(texto_total):
+        (
+            ca, al, t, v_percent,
+            numero_amostra, ca_t_percent, nome,
+            k, mg, h_al, mg_t_percent, k_t_percent, m_percent,
+            ph_h2o, ph_cacl2,
+            b, cu, mn, fe, zn, mo, p, p_rem, s
+        ) = m.groups()
 
-            if len(valores_antes) < 6:
-                continue
+        item = {
+            "numero": numero_amostra,
+            "nome": nome.strip(),
+            "amostra_lab": numero_amostra,
+            "h_al": h_al,
+            "al": al,
+            "t": t,
+            "v_percent": v_percent,
+            "mg_t_percent": mg_t_percent,
+            "k": k,
+            "ca": ca,
+            "mg": mg,
+            "s": s,
+            "ca_t_percent": ca_t_percent,
+            "m_percent": m_percent,
+            "ph_h2o": ph_h2o,
+            "ph_cacl2": ph_cacl2,
+            "p_rem": p_rem,
+            "mo": mo,
+            "zn": zn,
+            "fe": fe,
+            "mn": mn,
+            "cu": cu,
+            "b": b,
+            "p": p,
+        }
 
-            if len(valores_depois) < 18:
-                continue
+        item["diag_ph"] = interpretar_ph(numero(item["ph_h2o"]))
+        item["diag_mo"] = interpretar_mo(numero(item["mo"]))
+        item["diag_p"] = interpretar_p(numero(item["p"]))
+        item["diag_k"] = interpretar_k(numero(item["k"]))
+        item["diag_ca"] = interpretar_ca(numero(item["ca"]))
+        item["diag_mg"] = interpretar_mg(numero(item["mg"]))
+        item["diag_s"] = interpretar_s(numero(item["s"]))
+        item["diag_zn"] = interpretar_zn(numero(item["zn"]))
+        item["diag_fe"] = interpretar_fe(numero(item["fe"]))
+        item["diag_mn"] = interpretar_mn(numero(item["mn"]))
+        item["diag_cu"] = interpretar_cu(numero(item["cu"]))
+        item["diag_b"] = interpretar_b(numero(item["b"]))
+        item["diag_al"] = interpretar_al(numero(item["al"]))
+        item["diag_h_al"] = interpretar_h_al(numero(item["h_al"]))
+        item["diag_v"] = interpretar_v(numero(item["v_percent"]))
 
-            numero_amostra = linha.split("-")[0].strip()
-            nome = linha.split("-", 1)[1].strip()
-
-            item = {
-                "numero": numero_amostra,
-                "nome": nome,
-                "amostra_lab": valores_antes[4],
-                "h_al": valores_antes[0],
-                "al": valores_antes[1],
-                "t": valores_antes[2],
-                "v_percent": valores_antes[3],
-                "mg_t_percent": valores_antes[5],
-                "k": valores_depois[0],
-                "ca": valores_depois[1],
-                "mg": valores_depois[2],
-                "s": valores_depois[3],
-                "ca_t_percent": valores_depois[4],
-                "m_percent": valores_depois[5],
-                "ph_h2o": valores_depois[6],
-                "ph_cacl2": valores_depois[7],
-                "p_rem": valores_depois[8],
-                "mo": valores_depois[9],
-                "zn": valores_depois[10],
-                "fe": valores_depois[11],
-                "mn": valores_depois[12],
-                "cu": valores_depois[13],
-                "b": valores_depois[14],
-                "p": valores_depois[17],
-            }
-
-            item["diag_ph"] = interpretar_ph(numero(item["ph_h2o"]))
-            item["diag_mo"] = interpretar_mo(numero(item["mo"]))
-            item["diag_p"] = interpretar_p(numero(item["p"]))
-            item["diag_k"] = interpretar_k(numero(item["k"]))
-            item["diag_ca"] = interpretar_ca(numero(item["ca"]))
-            item["diag_mg"] = interpretar_mg(numero(item["mg"]))
-            item["diag_s"] = interpretar_s(numero(item["s"]))
-            item["diag_zn"] = interpretar_zn(numero(item["zn"]))
-            item["diag_fe"] = interpretar_fe(numero(item["fe"]))
-            item["diag_mn"] = interpretar_mn(numero(item["mn"]))
-            item["diag_cu"] = interpretar_cu(numero(item["cu"]))
-            item["diag_b"] = interpretar_b(numero(item["b"]))
-            item["diag_al"] = interpretar_al(numero(item["al"]))
-            item["diag_h_al"] = interpretar_h_al(numero(item["h_al"]))
-            item["diag_v"] = interpretar_v(numero(item["v_percent"]))
-
-            dados.append(item)
+        dados.append(item)
 
     return dados
 
