@@ -186,8 +186,8 @@ div[data-testid="stAlert"] {
     }
 
     .logo-circle {
-    width: 150px;
-    height: 150px;
+    width: 170px;
+    height: 170px;
     border-radius: 50%;
     background: rgba(255,255,255,0.10);
     border: 4px solid white;
@@ -202,8 +202,8 @@ div[data-testid="stAlert"] {
     }
 
     .logo-img {
-    width: 115px;
-    height: 115px;
+    width: 150px;
+    height: 150px;
     object-fit: contain;
     background: transparent;
 }
