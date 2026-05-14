@@ -95,14 +95,14 @@ section[data-testid="stFileUploader"] button p {
     font-size: 54px;
     background: rgba(255,255,255,0.10);
 }
-*/
+
 .hero h1 {
     color: white !important;
     font-size: 48px !important;
     margin: 0;
     letter-spacing: 1px;
 }
-
+*/
 .hero h3 {
     color: #eef7ed !important;
     font-weight: 400;
