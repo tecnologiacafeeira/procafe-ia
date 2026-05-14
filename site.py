@@ -84,7 +84,7 @@ section[data-testid="stFileUploader"] button p {
     gap: 28px;
 }
 
-/*.logo-circle {
+ .logo-circle {
     width: 115px;
     height: 115px;
     border-radius: 50%;
@@ -102,7 +102,7 @@ section[data-testid="stFileUploader"] button p {
     margin: 0;
     letter-spacing: 1px;
 }
-*/
+
 .hero h3 {
     color: #eef7ed !important;
     font-weight: 400;
