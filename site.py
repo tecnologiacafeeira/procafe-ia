@@ -245,7 +245,8 @@ st.markdown("## Upload do Laudo de Análise")
 
 arquivo = st.file_uploader(
     "Selecione o laudo em PDF",
-    type=["pdf"]
+    type=["pdf"],
+    label_visibility="visible"
 )
 
 
