@@ -186,8 +186,8 @@ div[data-testid="stAlert"] {
     }
 
     .logo-circle {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     background: rgba(255,255,255,0.10);
     border: 4px solid white;
@@ -202,9 +202,10 @@ div[data-testid="stAlert"] {
     }
 
     .logo-img {
-    width: 85px;
-    height: 85px;
+    width: 115px;
+    height: 115px;
     object-fit: contain;
+    background: transparent;
 }
 
     .hero h1 {
