@@ -23,6 +23,44 @@ def cor_diagnostico(texto):
 st.markdown("""
 <style>
 
+/* Upload area corrigida */
+section[data-testid="stFileUploader"] {
+    background: rgba(255,255,255,0.96) !important;
+    padding: 20px !important;
+    border-radius: 18px !important;
+    border: 2px dashed #cbb98a !important;
+}
+
+/* Caixa interna */
+section[data-testid="stFileUploader"] > div {
+    background: white !important;
+    color: #1d2b1f !important;
+}
+
+/* Botão */
+section[data-testid="stFileUploader"] button {
+    background: #08743b !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: none !important;
+}
+
+/* Texto do botão */
+section[data-testid="stFileUploader"] button p {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+/* Troca Upload por Carregar */
+section[data-testid="stFileUploader"] button p::after {
+    content: "Carregar";
+    font-size: 16px;
+}
+
+section[data-testid="stFileUploader"] button p {
+    font-size: 0 !important;
+}
+
 .stApp {
     background:
         linear-gradient(rgba(245, 239, 225, 0.88), rgba(245, 239, 225, 0.92)),
