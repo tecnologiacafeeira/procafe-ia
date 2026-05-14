@@ -2,7 +2,8 @@ import streamlit as st
 from analisador import analisar_pdf, gerar_recomendacoes
 
 st.set_page_config(
-    page_title="Fundação Procafé",
+    page_title="Fundação Procafé - Diagnóstico Inteligente",
+    page_icon="☕",
     layout="wide"
 )
 
@@ -21,56 +22,143 @@ def cor_diagnostico(texto):
 
 st.markdown("""
 <style>
+
 .stApp {
-    background-color: #f3efe3;
-    color: #1d2b1f;
+    background:
+        linear-gradient(rgba(245, 239, 225, 0.88), rgba(245, 239, 225, 0.92)),
+        url("https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1600");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
-.titulo {
-    background: #06752f;
-    padding: 40px;
-    border-radius: 25px;
-    color: white;
-    margin-bottom: 30px;
+.hero {
+    background: linear-gradient(135deg, #064d2c, #08743b);
+    border-radius: 28px;
+    padding: 36px;
+    margin-bottom: 28px;
+    box-shadow: 0px 5px 22px rgba(0,0,0,0.25);
 }
 
-.titulo h1, .titulo h3 {
+.hero-content {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.logo-circle {
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    border: 5px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 54px;
+    background: rgba(255,255,255,0.10);
+}
+
+.hero h1 {
     color: white !important;
+    font-size: 48px !important;
+    margin: 0;
+    letter-spacing: 1px;
 }
 
-h1, h2, h3, h4, p, span, div, label {
+.hero h3 {
+    color: #eef7ed !important;
+    font-weight: 400;
+    margin-top: 8px;
+}
+
+.info-card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 22px;
+    padding: 22px;
+    margin-bottom: 24px;
+    border-left: 7px solid #08743b;
+    box-shadow: 0px 3px 14px rgba(0,0,0,0.10);
+    font-size: 17px;
     color: #1d2b1f !important;
+}
+
+.upload-card {
+    background: rgba(255,255,255,0.96);
+    border-radius: 22px;
+    padding: 24px;
+    margin-bottom: 28px;
+    border: 1px solid #d8c9a5;
+    box-shadow: 0px 3px 14px rgba(0,0,0,0.10);
+}
+
+section[data-testid="stFileUploader"] {
+    background: #f7f6f2;
+    padding: 18px;
+    border-radius: 18px;
+    border: 2px dashed #cbb98a;
 }
 
 div[data-testid="stExpander"] {
-    background-color: white !important;
-    color: #1d2b1f !important;
-    border-radius: 14px;
-    border: 1px solid #ddd;
+    background: rgba(255,255,255,0.97) !important;
+    border-radius: 18px !important;
+    border: 1px solid #d8c9a5 !important;
+    overflow: hidden;
+    box-shadow: 0px 3px 14px rgba(0,0,0,0.10);
+    margin-bottom: 16px;
+}
+
+.streamlit-expanderHeader {
+    background: #0b1320 !important;
+    color: white !important;
+    font-size: 22px !important;
+    padding: 18px !important;
 }
 
 div[data-testid="stExpander"] * {
     color: #1d2b1f !important;
 }
 
-.streamlit-expanderHeader {
-    background-color: #ffffff !important;
+h1, h2, h3, h4, p, span, label {
     color: #1d2b1f !important;
 }
 
 hr {
-    margin-top: 25px;
-    margin-bottom: 25px;
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
+div[data-testid="stAlert"] {
+    background: rgba(255,255,255,0.96);
+    border-radius: 18px;
 }
 
 @media (max-width: 768px) {
-    .titulo {
-        padding: 25px;
-        border-radius: 18px;
+    .stApp {
+        background-attachment: scroll;
     }
 
-    .titulo h1 {
-        font-size: 30px !important;
+    .hero {
+        padding: 25px;
+        border-radius: 20px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo-circle {
+        width: 88px;
+        height: 88px;
+        font-size: 42px;
+    }
+
+    .hero h1 {
+        font-size: 32px !important;
+    }
+
+    .hero h3 {
+        font-size: 18px !important;
     }
 
     h1 {
@@ -85,37 +173,51 @@ hr {
         font-size: 20px !important;
     }
 }
+
 </style>
 """, unsafe_allow_html=True)
 
 
 st.markdown("""
-<div class="titulo">
-<h1>☕ Fundação Procafé</h1>
-<h3>Diagnóstico inteligente de análises de solo para cafeicultura</h3>
+<div class="hero">
+    <div class="hero-content">
+        <div class="logo-circle">☕</div>
+        <div>
+            <h1>FUNDAÇÃO PROCAFÉ</h1>
+            <h3>Diagnóstico Inteligente de Solo</h3>
+        </div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-st.info(
-    "Envie o laudo em PDF ou imagem para análise automática. "
-    "O sistema irá extrair os dados, classificar os nutrientes "
-    "e apresentar um diagnóstico visual por amostra."
-)
+
+st.markdown("""
+<div class="info-card">
+    <p style="color:#1d2b1f !important; margin:0;">
+        Envie o laudo em PDF para análise automática. O sistema irá extrair os dados,
+        classificar os nutrientes e apresentar um diagnóstico visual por amostra,
+        com recomendações técnicas iniciais.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+
+
+st.markdown("## Upload do Laudo de Análise")
 
 arquivo = st.file_uploader(
-    "Selecione o laudo em PDF ou imagem",
-    type=["pdf", "png", "jpg", "jpeg"]
+    "Selecione o laudo em PDF",
+    type=["pdf"]
 )
+
+
 
 if arquivo is not None:
 
-    extensao = arquivo.name.split(".")[-1].lower()
-    caminho_arquivo = f"temp.{extensao}"
-
-    with open(caminho_arquivo, "wb") as f:
+    with open("temp.pdf", "wb") as f:
         f.write(arquivo.read())
 
-    dados = analisar_pdf(caminho_arquivo)
+    dados = analisar_pdf("temp.pdf")
 
     st.success("Laudo processado com sucesso!")
 
