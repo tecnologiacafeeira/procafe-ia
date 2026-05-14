@@ -206,6 +206,8 @@ div[data-testid="stAlert"] {
     height: 100%;
     object-fit: contain;
     transform: scale(2.5);
+    position: relative;
+    top: 8px;
 }
 
     .hero h1 {
