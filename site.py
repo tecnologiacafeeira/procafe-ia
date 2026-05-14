@@ -202,10 +202,10 @@ div[data-testid="stAlert"] {
     }
 
     .logo-img {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
-    background: transparent;
+    transform: scale(1.35);
 }
 
     .hero h1 {
