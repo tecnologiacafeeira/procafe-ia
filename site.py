@@ -211,7 +211,29 @@ div[data-testid="stAlert"] {
         font-size: 20px !important;
     }
 }
+/* CORREÇÃO FINAL DO UPLOADER NO CELULAR */
+section[data-testid="stFileUploader"] {
+    background: #ffffff !important;
+    color: #1d2b1f !important;
+    padding: 18px !important;
+    border-radius: 18px !important;
+    border: 2px dashed #cbb98a !important;
+}
 
+section[data-testid="stFileUploader"] * {
+    color: #1d2b1f !important;
+}
+
+section[data-testid="stFileUploader"] button {
+    background: #08743b !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+}
+
+section[data-testid="stFileUploader"] button * {
+    color: #ffffff !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
