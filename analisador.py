@@ -106,9 +106,14 @@ def interpretar_v(valor):
 
 
 def analisar_pdf(pdf_path):
-    doc = fitz.open(pdf_path)
-
     texto_total = ""
+
+    extensao = pdf_path.split(".")[-1].lower()
+
+    if extensao != "pdf":
+        return []
+
+    doc = fitz.open(pdf_path)
 
     for pagina in doc:
         texto_total += pagina.get_text("text") + "\n"
@@ -140,31 +145,26 @@ def analisar_pdf(pdf_path):
                 "numero": numero_amostra,
                 "nome": nome,
                 "amostra_lab": valores_antes[4],
-
                 "h_al": valores_antes[0],
                 "al": valores_antes[1],
                 "t": valores_antes[2],
                 "v_percent": valores_antes[3],
                 "mg_t_percent": valores_antes[5],
-
                 "k": valores_depois[0],
                 "ca": valores_depois[1],
                 "mg": valores_depois[2],
                 "s": valores_depois[3],
                 "ca_t_percent": valores_depois[4],
                 "m_percent": valores_depois[5],
-
                 "ph_h2o": valores_depois[6],
                 "ph_cacl2": valores_depois[7],
                 "p_rem": valores_depois[8],
                 "mo": valores_depois[9],
-
                 "zn": valores_depois[10],
                 "fe": valores_depois[11],
                 "mn": valores_depois[12],
                 "cu": valores_depois[13],
                 "b": valores_depois[14],
-
                 "p": valores_depois[17],
             }
 
@@ -188,43 +188,29 @@ def analisar_pdf(pdf_path):
 
     return dados
 
-def gerar_recomendacoes(item):
 
+def gerar_recomendacoes(item):
     recomendacoes = []
 
     if item["diag_p"] == "Baixo":
-        recomendacoes.append(
-            "Necessidade de correção fosfatada."
-        )
+        recomendacoes.append("Necessidade de correção fosfatada.")
 
     if item["diag_k"] == "Baixo":
-        recomendacoes.append(
-            "Potássio abaixo do ideal."
-        )
+        recomendacoes.append("Potássio abaixo do ideal.")
 
     if item["diag_ca"] == "Baixo":
-        recomendacoes.append(
-            "Cálcio baixo. Avaliar calagem."
-        )
+        recomendacoes.append("Cálcio baixo. Avaliar calagem.")
 
     if item["diag_mg"] == "Baixo":
-        recomendacoes.append(
-            "Magnésio baixo."
-        )
+        recomendacoes.append("Magnésio baixo.")
 
     if item["diag_v"] == "Baixo":
-        recomendacoes.append(
-            "Saturação por bases baixa. Possível necessidade de calagem."
-        )
+        recomendacoes.append("Saturação por bases baixa. Possível necessidade de calagem.")
 
     if item["diag_al"] == "Alto":
-        recomendacoes.append(
-            "Alumínio elevado com possível risco de toxidez."
-        )
+        recomendacoes.append("Alumínio elevado com possível risco de toxidez.")
 
     if len(recomendacoes) == 0:
-        recomendacoes.append(
-            "Solo equilibrado nos principais parâmetros."
-        )
+        recomendacoes.append("Solo equilibrado nos principais parâmetros.")
 
     return recomendacoes
