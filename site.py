@@ -186,10 +186,26 @@ div[data-testid="stAlert"] {
     }
 
     .logo-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.10);
+    border: 4px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
         width: 88px;
         height: 88px;
         font-size: 42px;
     }
+
+    .logo-img {
+    width: 85px;
+    height: 85px;
+    object-fit: contain;
+}
 
     .hero h1 {
         font-size: 32px !important;
@@ -241,7 +257,9 @@ section[data-testid="stFileUploader"] button * {
 st.markdown("""
 <div class="hero">
     <div class="hero-content">
-        <div class="logo-circle">☕</div>
+        <div class="logo-circle">
+    <img src="https://raw.githubusercontent.com/tecnologiacafeeira/procafe-ia/principal/assets/logo.png" class="logo-img">
+</div>
         <div>
             <h1>FUNDAÇÃO PROCAFÉ</h1>
             <h3>Diagnóstico Inteligente de Solo</h3>
