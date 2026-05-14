@@ -104,6 +104,23 @@ def interpretar_h_al(valor):
 def interpretar_v(valor):
     return classificar(valor, 40.0, 60.0)
 
+def preencher_diagnosticos(item):
+    item["diag_ph"] = interpretar_ph(numero(item["ph_h2o"]))
+    item["diag_mo"] = interpretar_mo(numero(item["mo"]))
+    item["diag_p"] = interpretar_p(numero(item["p"]))
+    item["diag_k"] = interpretar_k(numero(item["k"]))
+    item["diag_ca"] = interpretar_ca(numero(item["ca"]))
+    item["diag_mg"] = interpretar_mg(numero(item["mg"]))
+    item["diag_s"] = interpretar_s(numero(item["s"]))
+    item["diag_zn"] = interpretar_zn(numero(item["zn"]))
+    item["diag_fe"] = interpretar_fe(numero(item["fe"]))
+    item["diag_mn"] = interpretar_mn(numero(item["mn"]))
+    item["diag_cu"] = interpretar_cu(numero(item["cu"]))
+    item["diag_b"] = interpretar_b(numero(item["b"]))
+    item["diag_al"] = interpretar_al(numero(item["al"]))
+    item["diag_h_al"] = interpretar_h_al(numero(item["h_al"]))
+    item["diag_v"] = interpretar_v(numero(item["v_percent"]))
+
 
 def analisar_pdf(pdf_path):
     texto_total = ""
@@ -116,21 +133,78 @@ def analisar_pdf(pdf_path):
     for pagina in doc:
         texto_total += pagina.get_text("text") + "\n"
 
+    linhas = [
+        linha.strip()
+        for linha in texto_total.split("\n")
+        if linha.strip()
+    ]
+
+    dados = []
+
+    # =========================
+    # MODELO ANTIGO
+    # =========================
+    for i, linha in enumerate(linhas):
+        if re.match(r"^\d{2}-", linha):
+
+            valores_antes = linhas[max(0, i - 6):i]
+            valores_depois = linhas[i + 1:i + 20]
+
+            if len(valores_antes) < 6 or len(valores_depois) < 18:
+                continue
+
+            numero_amostra = linha.split("-")[0].strip()
+            nome = linha.split("-", 1)[1].strip()
+
+            item = {
+                "numero": numero_amostra,
+                "nome": nome,
+                "amostra_lab": valores_antes[4],
+                "h_al": valores_antes[0],
+                "al": valores_antes[1],
+                "t": valores_antes[2],
+                "v_percent": valores_antes[3],
+                "mg_t_percent": valores_antes[5],
+                "k": valores_depois[0],
+                "ca": valores_depois[1],
+                "mg": valores_depois[2],
+                "s": valores_depois[3],
+                "ca_t_percent": valores_depois[4],
+                "m_percent": valores_depois[5],
+                "ph_h2o": valores_depois[6],
+                "ph_cacl2": valores_depois[7],
+                "p_rem": valores_depois[8],
+                "mo": valores_depois[9],
+                "zn": valores_depois[10],
+                "fe": valores_depois[11],
+                "mn": valores_depois[12],
+                "cu": valores_depois[13],
+                "b": valores_depois[14],
+                "p": valores_depois[17],
+            }
+
+            preencher_diagnosticos(item)
+            dados.append(item)
+
+    if dados:
+        return dados
+
+    # =========================
+    # MODELO NOVO PROCafé
+    # =========================
     texto = " ".join(texto_total.split())
 
     padrao_linha = re.compile(
-        r"(\d+[,.]\d+)\s+"      # Ca
-        r"(\d+[,.]\d+)\s+"      # Al
-        r"(\d+[,.]\d+)\s+"      # T
-        r"(\d+[,.]\d+)\s+"      # V
-        r"(\d{5})\s+"           # Número da amostra
-        r"(\d+[,.]\d+)\s+"      # Ca/T
-        r"(.+?)\s+"             # Identificação
-        r"(\d{2,4})\s+"         # K
-        r"(.+?)(?=\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d{5}\s+| H\+Al| Ca - Mg|$)"
+        r"(\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+)\s+"
+        r"(\d+[,.]\d+)\s+"
+        r"(\d{5})\s+"
+        r"(\d+[,.]\d+)\s+"
+        r"(.+?)\s+"
+        r"(\d{2,4})\s+"
+        r"(.+?)(?=\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d{5}\s+| Ca - Mg|$)"
     )
-
-    dados = []
 
     for m in padrao_linha.finditer(texto):
         ca = m.group(1)
@@ -150,23 +224,18 @@ def analisar_pdf(pdf_path):
             "numero": numero_amostra,
             "nome": nome,
             "amostra_lab": numero_amostra,
-
             "ca": ca,
             "al": al,
             "t": t,
             "v_percent": v_percent,
             "ca_t_percent": ca_t_percent,
             "k": k,
-
             "mg": resto[0],
             "h_al": resto[1],
             "mg_t_percent": resto[2],
-            "k_t_percent": resto[3] if len(resto) > 3 else "X.XX",
             "m_percent": resto[4],
-
             "ph_h2o": resto[5],
             "ph_cacl2": resto[6],
-
             "b": resto[8],
             "cu": resto[10],
             "mn": resto[12],
@@ -178,22 +247,7 @@ def analisar_pdf(pdf_path):
             "s": resto[23],
         }
 
-        item["diag_ph"] = interpretar_ph(numero(item["ph_h2o"]))
-        item["diag_mo"] = interpretar_mo(numero(item["mo"]))
-        item["diag_p"] = interpretar_p(numero(item["p"]))
-        item["diag_k"] = interpretar_k(numero(item["k"]))
-        item["diag_ca"] = interpretar_ca(numero(item["ca"]))
-        item["diag_mg"] = interpretar_mg(numero(item["mg"]))
-        item["diag_s"] = interpretar_s(numero(item["s"]))
-        item["diag_zn"] = interpretar_zn(numero(item["zn"]))
-        item["diag_fe"] = interpretar_fe(numero(item["fe"]))
-        item["diag_mn"] = interpretar_mn(numero(item["mn"]))
-        item["diag_cu"] = interpretar_cu(numero(item["cu"]))
-        item["diag_b"] = interpretar_b(numero(item["b"]))
-        item["diag_al"] = interpretar_al(numero(item["al"]))
-        item["diag_h_al"] = interpretar_h_al(numero(item["h_al"]))
-        item["diag_v"] = interpretar_v(numero(item["v_percent"]))
-
+        preencher_diagnosticos(item)
         dados.append(item)
 
     return dados
