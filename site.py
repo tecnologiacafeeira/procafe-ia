@@ -185,7 +185,7 @@ div[data-testid="stAlert"] {
         text-align: center;
     }
 
-    .logo-circle {
+    /*.logo-circle {
     width: 170px;
     height: 170px;
     border-radius: 50%;
@@ -199,7 +199,7 @@ div[data-testid="stAlert"] {
         width: 88px;
         height: 88px;
         font-size: 42px;
-    }
+    }*/
 
     .logo-img {
     width: 100%;
