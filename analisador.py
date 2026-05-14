@@ -116,78 +116,66 @@ def analisar_pdf(pdf_path):
     for pagina in doc:
         texto_total += pagina.get_text("text") + "\n"
 
-    texto_total = " ".join(texto_total.split())
+    texto = " ".join(texto_total.split())
 
-    dados = []
-
-    padrao = re.compile(
+    padrao_linha = re.compile(
         r"(\d+[,.]\d+)\s+"      # Ca
         r"(\d+[,.]\d+)\s+"      # Al
         r"(\d+[,.]\d+)\s+"      # T
         r"(\d+[,.]\d+)\s+"      # V
-        r"(\d{5})\s+"           # Amostra
+        r"(\d{5})\s+"           # Número da amostra
         r"(\d+[,.]\d+)\s+"      # Ca/T
         r"(.+?)\s+"             # Identificação
         r"(\d{2,4})\s+"         # K
-        r"(\d+[,.]\d+)\s+"      # Mg
-        r"(\d+[,.]\d+)\s+"      # H+Al
-        r"(\d+[,.]\d+)\s+"      # Mg/T
-        r"(\d+[,.]\d+)\s+"      # K/T
-        r"(\d+[,.]\d+)\s+"      # m
-        r"(\d+[,.]\d+)\s+"      # pH H2O
-        r"(\d+[,.]\d+)\s+"
-        r"(?:X\.XX|\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(?:X\.XX|\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(?:X\.XX|\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(?:X\.XX|\d+[,.]\d+)\s+"
-        r"(?:X\.XX|\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(?:X\.XX|\d+[,.]\d+)\s+"
-        r"(?:X\.XX|\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(\d+[,.]\d+|X\.XX)\s+"
-        r"(\d+[,.]\d+|X\.XX)"
+        r"(.+?)(?=\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d{5}\s+| H\+Al| Ca - Mg|$)"
     )
 
-    for m in padrao.finditer(texto_total):
-        (
-            ca, al, t, v_percent,
-            numero_amostra, ca_t_percent, nome,
-            k, mg, h_al, mg_t_percent, k_t_percent, m_percent,
-            ph_h2o, ph_cacl2,
-            b, cu, mn, fe, zn, mo, p, p_rem, s
-        ) = m.groups()
+    dados = []
+
+    for m in padrao_linha.finditer(texto):
+        ca = m.group(1)
+        al = m.group(2)
+        t = m.group(3)
+        v_percent = m.group(4)
+        numero_amostra = m.group(5)
+        ca_t_percent = m.group(6)
+        nome = m.group(7).strip()
+        k = m.group(8)
+        resto = m.group(9).strip().split()
+
+        if len(resto) < 24:
+            continue
 
         item = {
             "numero": numero_amostra,
-            "nome": nome.strip(),
+            "nome": nome,
             "amostra_lab": numero_amostra,
-            "h_al": h_al,
+
+            "ca": ca,
             "al": al,
             "t": t,
             "v_percent": v_percent,
-            "mg_t_percent": mg_t_percent,
-            "k": k,
-            "ca": ca,
-            "mg": mg,
-            "s": s,
             "ca_t_percent": ca_t_percent,
-            "m_percent": m_percent,
-            "ph_h2o": ph_h2o,
-            "ph_cacl2": ph_cacl2,
-            "p_rem": p_rem,
-            "mo": mo,
-            "zn": zn,
-            "fe": fe,
-            "mn": mn,
-            "cu": cu,
-            "b": b,
-            "p": p,
+            "k": k,
+
+            "mg": resto[0],
+            "h_al": resto[1],
+            "mg_t_percent": resto[2],
+            "k_t_percent": resto[3] if len(resto) > 3 else "X.XX",
+            "m_percent": resto[4],
+
+            "ph_h2o": resto[5],
+            "ph_cacl2": resto[6],
+
+            "b": resto[8],
+            "cu": resto[10],
+            "mn": resto[12],
+            "fe": resto[14],
+            "zn": resto[16],
+            "mo": resto[18],
+            "p": resto[20],
+            "p_rem": resto[21],
+            "s": resto[23],
         }
 
         item["diag_ph"] = interpretar_ph(numero(item["ph_h2o"]))
@@ -209,7 +197,6 @@ def analisar_pdf(pdf_path):
         dados.append(item)
 
     return dados
-
 
 def gerar_recomendacoes(item):
     recomendacoes = []
