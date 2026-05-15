@@ -218,14 +218,14 @@ def analisar_modelo_procafe(texto_total):
         if len(tail) >= 17:
             p_rem = tail[14]
             p = tail[13]
+            s = tail[15]
+
             b = tail[1]
             cu = tail[3]
             mn = tail[4]
-            fe = primeiro_valor([tail[6], tail[7]])
+            fe = tail[6]
             zn = tail[9]
             mo = tail[10]
-            s = primeiro_valor([tail[15], tail[16]])
-
         # Padrão mais curto, quando vários micronutrientes vêm como X.XX
         elif len(tail) >= 10:
             p_rem = tail[0]
