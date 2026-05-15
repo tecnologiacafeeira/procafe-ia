@@ -310,24 +310,6 @@ h1, h2, h3, h4, p, span, label {{
     }}
 }}
 
-[data-testid="stFileUploader"] > label {{
-    display: none !important;
-}}
-
-[data-testid="stFileUploader"] section {{
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-}}
-
-[data-testid="stFileUploaderDropzone"] {{
-    opacity: 0 !important;
-    height: 0px !important;
-    min-height: 0px !important;
-    padding: 0 !important;
-    border: none !important;
-}}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -369,9 +351,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 arquivo = st.file_uploader(
-    "",
+    "Arraste e solte o laudo em PDF aqui ou clique para selecionar",
     type=["pdf"],
-    label_visibility="collapsed"
+    label_visibility="visible"
 )
 
 
@@ -443,11 +425,11 @@ if arquivo is not None:
 
     pdf = gerar_pdf_relatorio(dados)
 
-st.download_button(
-    label="📄 Baixar relatório técnico em PDF",
-    data=pdf,
-    file_name="relatorio_procafe.pdf",
-    mime="application/pdf"
+    st.download_button(
+        label="📄 Baixar relatório técnico em PDF",
+        data=pdf,
+        file_name="relatorio_procafe.pdf",
+        mime="application/pdf"
 )
 
 st.markdown("## Diagnóstico das Amostras")
