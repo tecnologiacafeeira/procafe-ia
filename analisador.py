@@ -202,42 +202,16 @@ def analisar_modelo_procafe(texto_total):
         ph_h2o = pega(5)
         ph_cacl2 = pega(6)
 
-        tail = resto[7:]
+        p_rem = pega(21)
+        p = pega(20)
+        s = pega(22)
 
-        p_rem = "X.XX"
-        p = "X.XX"
-        s = "X.XX"
-        b = "X.XX"
-        cu = "X.XX"
-        mn = "X.XX"
-        fe = "X.XX"
-        zn = "X.XX"
-        mo = "X.XX"
-
-        # Padrão completo, como laudos com Cu, Mn, Fe, Zn, MO, P, P-rem e S
-        if len(tail) >= 17:
-            p_rem = tail[14]
-            p = tail[13]
-            s = tail[15]
-
-            b = tail[1]
-            cu = tail[3]
-            mn = tail[4]
-            fe = tail[6]
-            zn = tail[9]
-            mo = tail[10]
-        # Padrão mais curto, quando vários micronutrientes vêm como X.XX
-        elif len(tail) >= 10:
-            p_rem = tail[0]
-            b = tail[1]
-            mo = tail[-5]
-            p = tail[-2]
-            s = tail[-1]
-
-            if len(tail) >= 12:
-                zn = primeiro_valor([tail[-7], tail[-6]])
-            elif len(tail) >= 11:
-                zn = tail[-6]
+        b = pega(8)
+        cu = pega(10)
+        mn = pega(11)
+        fe = pega(13)
+        zn = pega(16)
+        mo = pega(17)
 
         item = {
             "numero": numero_amostra,
