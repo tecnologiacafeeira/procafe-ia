@@ -2,11 +2,13 @@ import streamlit as st
 from analisador import analisar_pdf, gerar_recomendacoes
 import base64
 import os
+from io import BytesIO
+
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-from io import BytesIO
+
 
 st.set_page_config(
     page_title="Fundação Procafé - Diagnóstico Inteligente",
@@ -32,6 +34,7 @@ def cor_diagnostico(texto):
     elif "Sem dado" in texto:
         return "⚪ Sem dado"
     return texto
+
 
 def gerar_pdf_relatorio(dados):
     buffer = BytesIO()
@@ -75,7 +78,7 @@ def gerar_pdf_relatorio(dados):
             ["B", item["b"], item["diag_b"]],
         ]
 
-        table = Table(tabela, colWidths=[120, 100, 160])
+        table = Table(tabela, colWidths=[120, 100, 180])
         table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#08743b")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
@@ -95,7 +98,6 @@ def gerar_pdf_relatorio(dados):
         elementos.append(Spacer(1, 22))
 
     doc.build(elementos)
-
     buffer.seek(0)
     return buffer
 
@@ -155,37 +157,12 @@ st.markdown(f"""
     margin-top: 8px;
 }}
 
-.main-card {{
+.card {{
     background: rgba(255,250,235,0.96);
     border-radius: 22px;
     padding: 32px;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.18);
     margin-bottom: 26px;
-}}
-
-.feature-row {{
-    display: grid;
-    grid-template-columns: 38% 62%;
-    gap: 28px;
-    align-items: center;
-    padding: 26px 0;
-    border-bottom: 1px solid rgba(120,90,40,0.22);
-}}
-
-.feature-row:last-child {{
-    border-bottom: none;
-}}
-
-.feature-left {{
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-}}
-
-.feature-icon {{
-    font-size: 42px;
-    color: #075c34;
-    min-width: 52px;
 }}
 
 .feature-title {{
@@ -201,24 +178,16 @@ st.markdown(f"""
     line-height: 1.45;
 }}
 
-.action-box {{
-    background: #eef2df;
-    border-radius: 14px;
-    padding: 24px 28px;
-    font-weight: 800;
-    color: #073d25;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid rgba(7,92,52,0.15);
+section[data-testid="stFileUploader"] {{
+    background: #eef2df !important;
+    padding: 24px !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(7,92,52,0.20) !important;
 }}
 
-section[data-testid="stFileUploader"] {{
-    background: white !important;
-    padding: 18px !important;
-    border-radius: 18px !important;
-    border: 2px dashed #cbb98a !important;
-    margin-bottom: 24px !important;
+section[data-testid="stFileUploader"] label {{
+    color: #073d25 !important;
+    font-weight: 800 !important;
 }}
 
 section[data-testid="stFileUploader"] * {{
@@ -234,6 +203,15 @@ section[data-testid="stFileUploader"] button {{
 
 section[data-testid="stFileUploader"] button * {{
     color: white !important;
+}}
+
+div[data-testid="stDownloadButton"] button {{
+    background: #08743b !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: none !important;
+    padding: 14px 22px !important;
+    font-weight: 800 !important;
 }}
 
 div[data-testid="stExpander"] {{
@@ -258,6 +236,7 @@ h1, h2, h3, h4, p, span, label {{
     border-radius: 18px;
     padding: 24px;
     margin-top: 22px;
+    margin-bottom: 26px;
     display: flex;
     align-items: center;
     gap: 18px;
@@ -300,16 +279,10 @@ h1, h2, h3, h4, p, span, label {{
         font-size: 22px !important;
     }}
 
-    .main-card {{
+    .card {{
         padding: 22px;
     }}
-
-    .feature-row {{
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }}
 }}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -333,68 +306,71 @@ st.markdown(f"""
 
 
 st.markdown("""
-<div class="main-card">
-    <div class="feature-row">
-        <div class="feature-left">
-            <div class="feature-icon">☁️</div>
+<div class="card">
+    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center;">
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="font-size:42px;">☁️</div>
             <div>
                 <div class="feature-title">Upload do Laudo de Análise de Solo (PDF)</div>
                 <div class="feature-desc">Envie o arquivo do laboratório para análise automática.</div>
             </div>
         </div>
-        <div class="action-box">
-            <span>Arraste e solte o arquivo abaixo ou clique para selecionar</span>
+        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(7,92,52,0.20);">
+            <span>Use o campo abaixo para arrastar ou selecionar o arquivo</span>
             <span>PDF</span>
         </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
+
 arquivo = st.file_uploader(
-    "Arraste e solte o laudo em PDF aqui ou clique para selecionar",
+    "Arraste e solte o arquivo aqui ou clique para selecionar",
     type=["pdf"],
     label_visibility="visible"
 )
 
 
 st.markdown("""
-<div class="main-card">
-    <div class="feature-row">
-        <div class="feature-left">
-            <div class="feature-icon">▥</div>
+<div class="card">
+    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0; border-bottom:1px solid rgba(120,90,40,0.22);">
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="font-size:42px;">▥</div>
             <div>
                 <div class="feature-title">Resultados da Análise</div>
                 <div class="feature-desc">Interpretação automática dos principais parâmetros do solo.</div>
             </div>
         </div>
-        <div class="action-box">
+        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
             <span>☰ VER RESULTADOS</span>
             <span>⌄</span>
         </div>
     </div>
-    <div class="feature-row">
-        <div class="feature-left">
-            <div class="feature-icon">🌿</div>
+
+    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0; border-bottom:1px solid rgba(120,90,40,0.22);">
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="font-size:42px;">🌿</div>
             <div>
                 <div class="feature-title">Recomendações Agronômicas</div>
                 <div class="feature-desc">Sugestões personalizadas para melhoria da fertilidade do solo.</div>
             </div>
         </div>
-        <div class="action-box">
+        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
             <span>🌱 VER RECOMENDAÇÕES</span>
             <span>⌄</span>
         </div>
     </div>
-    <div class="feature-row">
-        <div class="feature-left">
-            <div class="feature-icon">📄</div>
+
+    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0;">
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="font-size:42px;">📄</div>
             <div>
                 <div class="feature-title">Relatório Técnico</div>
-                <div class="feature-desc">Gere um relatório técnico completo com todos os resultados.</div>
+                <div class="feature-desc">Após enviar o laudo, baixe o relatório técnico completo.</div>
             </div>
         </div>
-        <div class="action-box">
-            <span>📄 GERAR RELATÓRIO PDF</span>
+        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
+            <span>📄 RELATÓRIO PDF</span>
             <span>⌄</span>
         </div>
     </div>
@@ -430,11 +406,11 @@ if arquivo is not None:
         data=pdf,
         file_name="relatorio_procafe.pdf",
         mime="application/pdf"
-)
+    )
 
-st.markdown("## Diagnóstico das Amostras")
+    st.markdown("## Diagnóstico das Amostras")
 
-for item in dados:
+    for item in dados:
 
         with st.expander(f"🌱 {item['numero']} - {item['nome']}"):
 
