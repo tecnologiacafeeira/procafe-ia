@@ -360,6 +360,7 @@ st.markdown("""
             <span>⌄</span>
         </div>
     </div>
+    """, unsafe_allow_html=True)
 
 if arquivo is not None:
 
