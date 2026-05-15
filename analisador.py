@@ -3,152 +3,111 @@ import re
 
 
 def numero(valor):
-    if valor in ["X.XX", "XXX", "xxx", "x.xx"]:
+    if valor is None:
         return None
 
-    return float(valor.replace(",", "."))
+    valor = str(valor).strip()
+
+    if valor.upper() in ["X.XX", "XXX", "X", "-", ""]:
+        return None
+
+    try:
+        return float(valor.replace(",", "."))
+    except:
+        return None
 
 
 def classificar(valor, baixo_max, medio_max):
     if valor is None:
         return "Sem dado"
-
     if valor < baixo_max:
         return "Baixo"
     elif valor <= medio_max:
         return "Médio"
-    else:
-        return "Alto"
+    return "Alto"
 
 
 def interpretar_ph(valor):
     if valor is None:
         return "Sem dado"
-
     if valor < 5.0:
         return "Baixo"
     elif valor <= 6.0:
         return "Médio"
-    else:
-        return "Alto"
+    return "Alto"
 
 
-def interpretar_mo(valor):
-    return classificar(valor, 2.0, 4.0)
-
-
-def interpretar_p(valor):
-    return classificar(valor, 10.0, 20.0)
-
-
-def interpretar_k(valor):
-    return classificar(valor, 100.0, 160.0)
-
-
-def interpretar_ca(valor):
-    return classificar(valor, 1.5, 3.0)
-
-
-def interpretar_mg(valor):
-    return classificar(valor, 0.5, 1.0)
-
-
-def interpretar_s(valor):
-    return classificar(valor, 5.0, 10.0)
-
-
-def interpretar_zn(valor):
-    return classificar(valor, 1.0, 2.0)
-
-
-def interpretar_b(valor):
-    return classificar(valor, 0.5, 1.0)
-
-
-def interpretar_cu(valor):
-    return classificar(valor, 0.5, 1.0)
-
-
-def interpretar_fe(valor):
-    return classificar(valor, 20.0, 50.0)
-
-
-def interpretar_mn(valor):
-    return classificar(valor, 5.0, 20.0)
+def interpretar_mo(valor): return classificar(valor, 2.0, 4.0)
+def interpretar_p(valor): return classificar(valor, 10.0, 20.0)
+def interpretar_k(valor): return classificar(valor, 100.0, 160.0)
+def interpretar_ca(valor): return classificar(valor, 1.5, 3.0)
+def interpretar_mg(valor): return classificar(valor, 0.5, 1.0)
+def interpretar_s(valor): return classificar(valor, 5.0, 10.0)
+def interpretar_zn(valor): return classificar(valor, 1.0, 2.0)
+def interpretar_b(valor): return classificar(valor, 0.5, 1.0)
+def interpretar_cu(valor): return classificar(valor, 0.5, 1.0)
+def interpretar_fe(valor): return classificar(valor, 20.0, 50.0)
+def interpretar_mn(valor): return classificar(valor, 5.0, 20.0)
 
 
 def interpretar_al(valor):
     if valor is None:
         return "Sem dado"
-
     if valor <= 0.3:
         return "Baixo"
     elif valor <= 1.0:
         return "Médio"
-    else:
-        return "Alto"
+    return "Alto"
 
 
 def interpretar_h_al(valor):
     if valor is None:
         return "Sem dado"
-
     if valor > 4.0:
         return "Baixo"
     elif valor >= 2.0:
         return "Médio"
-    else:
-        return "Alto"
+    return "Alto"
 
 
 def interpretar_v(valor):
     return classificar(valor, 40.0, 60.0)
 
+
 def preencher_diagnosticos(item):
-    item["diag_ph"] = interpretar_ph(numero(item["ph_h2o"]))
-    item["diag_mo"] = interpretar_mo(numero(item["mo"]))
-    item["diag_p"] = interpretar_p(numero(item["p"]))
-    item["diag_k"] = interpretar_k(numero(item["k"]))
-    item["diag_ca"] = interpretar_ca(numero(item["ca"]))
-    item["diag_mg"] = interpretar_mg(numero(item["mg"]))
-    item["diag_s"] = interpretar_s(numero(item["s"]))
-    item["diag_zn"] = interpretar_zn(numero(item["zn"]))
-    item["diag_fe"] = interpretar_fe(numero(item["fe"]))
-    item["diag_mn"] = interpretar_mn(numero(item["mn"]))
-    item["diag_cu"] = interpretar_cu(numero(item["cu"]))
-    item["diag_b"] = interpretar_b(numero(item["b"]))
-    item["diag_al"] = interpretar_al(numero(item["al"]))
-    item["diag_h_al"] = interpretar_h_al(numero(item["h_al"]))
-    item["diag_v"] = interpretar_v(numero(item["v_percent"]))
+    item["diag_ph"] = interpretar_ph(numero(item.get("ph_h2o")))
+    item["diag_mo"] = interpretar_mo(numero(item.get("mo")))
+    item["diag_p"] = interpretar_p(numero(item.get("p")))
+    item["diag_k"] = interpretar_k(numero(item.get("k")))
+    item["diag_ca"] = interpretar_ca(numero(item.get("ca")))
+    item["diag_mg"] = interpretar_mg(numero(item.get("mg")))
+    item["diag_s"] = interpretar_s(numero(item.get("s")))
+    item["diag_zn"] = interpretar_zn(numero(item.get("zn")))
+    item["diag_fe"] = interpretar_fe(numero(item.get("fe")))
+    item["diag_mn"] = interpretar_mn(numero(item.get("mn")))
+    item["diag_cu"] = interpretar_cu(numero(item.get("cu")))
+    item["diag_b"] = interpretar_b(numero(item.get("b")))
+    item["diag_al"] = interpretar_al(numero(item.get("al")))
+    item["diag_h_al"] = interpretar_h_al(numero(item.get("h_al")))
+    item["diag_v"] = interpretar_v(numero(item.get("v_percent")))
 
 
-def analisar_pdf(pdf_path):
-    texto_total = ""
-
-    if pdf_path.split(".")[-1].lower() != "pdf":
-        return []
-
+def extrair_texto(pdf_path):
+    texto = ""
     doc = fitz.open(pdf_path)
-
     for pagina in doc:
-        texto_total += pagina.get_text("text") + "\n"
+        texto += pagina.get_text("text") + "\n"
+    return texto
 
-    linhas = [
-        linha.strip()
-        for linha in texto_total.split("\n")
-        if linha.strip()
-    ]
 
+def analisar_modelo_antigo(texto_total):
+    linhas = [l.strip() for l in texto_total.split("\n") if l.strip()]
     dados = []
 
-    # =========================
-    # MODELO ANTIGO
-    # =========================
     for i, linha in enumerate(linhas):
         if re.match(r"^\d{2}-", linha):
-
             valores_antes = linhas[max(0, i - 6):i]
-            valores_depois = linhas[i + 1:i + 20]
+            valores_depois = linhas[i + 1:i + 25]
 
             if len(valores_antes) < 6 or len(valores_depois) < 18:
                 continue
@@ -186,27 +145,26 @@ def analisar_pdf(pdf_path):
             preencher_diagnosticos(item)
             dados.append(item)
 
-    if dados:
-        return dados
+    return dados
 
-    # =========================
-    # MODELO NOVO PROCafé
-    # =========================
+
+def analisar_modelo_novo(texto_total):
     texto = " ".join(texto_total.split())
+    dados = []
 
-    padrao_linha = re.compile(
-        r"(\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+)\s+"
-        r"(\d+[,.]\d+)\s+"
-        r"(\d{5})\s+"
-        r"(\d+[,.]\d+)\s+"
-        r"(.+?)\s+"
-        r"(\d{2,4})\s+"
-        r"(.+?)(?=\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d{5}\s+| Ca - Mg|$)"
+    padrao = re.compile(
+        r"(\d+[,.]\d+)\s+"      # Ca
+        r"(\d+[,.]\d+)\s+"      # Al
+        r"(\d+[,.]\d+)\s+"      # T
+        r"(\d+[,.]\d+)\s+"      # V
+        r"(\d{5})\s+"           # Amostra
+        r"(\d+[,.]\d+)\s+"      # Ca/T
+        r"(.+?)\s+"             # Identificação
+        r"(\d{2,4})\s+"         # K
+        r"(.+?)(?=\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d{5}\s+| Ca - Mg| H\+Al| Observação|$)"
     )
 
-    for m in padrao_linha.finditer(texto):
+    for m in padrao.finditer(texto):
         ca = m.group(1)
         al = m.group(2)
         t = m.group(3)
@@ -217,8 +175,11 @@ def analisar_pdf(pdf_path):
         k = m.group(8)
         resto = m.group(9).strip().split()
 
-        if len(resto) < 24:
+        if len(resto) < 20:
             continue
+
+        def pega(pos):
+            return resto[pos] if pos < len(resto) else "X.XX"
 
         item = {
             "numero": numero_amostra,
@@ -230,27 +191,45 @@ def analisar_pdf(pdf_path):
             "v_percent": v_percent,
             "ca_t_percent": ca_t_percent,
             "k": k,
-            "mg": resto[0],
-            "h_al": resto[1],
-            "mg_t_percent": resto[2],
-            "m_percent": resto[4],
-            "ph_h2o": resto[5],
-            "ph_cacl2": resto[6],
-            "b": resto[8],
-            "cu": resto[10],
-            "mn": resto[12],
-            "fe": resto[14],
-            "zn": resto[16],
-            "mo": resto[18],
-            "p": resto[20],
-            "p_rem": resto[21],
-            "s": resto[23],
+            "mg": pega(0),
+            "h_al": pega(1),
+            "mg_t_percent": pega(2),
+            "m_percent": pega(4),
+            "ph_h2o": pega(5),
+            "ph_cacl2": pega(6),
+            "p_rem": pega(21),
+            "mo": pega(18),
+            "zn": pega(16),
+            "fe": pega(14),
+            "mn": pega(12),
+            "cu": pega(10),
+            "b": pega(8),
+            "p": pega(20),
+            "s": pega(23),
         }
 
         preencher_diagnosticos(item)
         dados.append(item)
 
     return dados
+
+
+def analisar_pdf(pdf_path):
+    if pdf_path.split(".")[-1].lower() != "pdf":
+        return []
+
+    texto_total = extrair_texto(pdf_path)
+
+    dados = analisar_modelo_antigo(texto_total)
+    if dados:
+        return dados
+
+    dados = analisar_modelo_novo(texto_total)
+    if dados:
+        return dados
+
+    return []
+
 
 def gerar_recomendacoes(item):
     recomendacoes = []
