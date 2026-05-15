@@ -431,7 +431,7 @@ st.download_button(
     mime="application/pdf"
 )
 
-    st.markdown("## Diagnóstico das Amostras")
+st.markdown("## Diagnóstico das Amostras")
 
     for item in dados:
 
