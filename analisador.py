@@ -95,8 +95,10 @@ def preencher_diagnosticos(item):
 def extrair_texto(pdf_path):
     texto = ""
     doc = fitz.open(pdf_path)
+
     for pagina in doc:
         texto += pagina.get_text("text") + "\n"
+
     return texto
 
 
@@ -106,6 +108,7 @@ def analisar_modelo_antigo(texto_total):
 
     for i, linha in enumerate(linhas):
         if re.match(r"^\d{2}-", linha):
+
             valores_antes = linhas[max(0, i - 6):i]
             valores_depois = linhas[i + 1:i + 25]
 
@@ -157,11 +160,11 @@ def analisar_modelo_novo(texto_total):
         r"(\d+[,.]\d+)\s+"      # Al
         r"(\d+[,.]\d+)\s+"      # T
         r"(\d+[,.]\d+)\s+"      # V
-        r"(\d{5})\s+"           # Amostra
+        r"(\d{4,5})\s+"         # Número da amostra
         r"(\d+[,.]\d+)\s+"      # Ca/T
         r"(.+?)\s+"             # Identificação
-        r"(\d{2,4})\s+"         # K
-        r"(.+?)(?=\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d{5}\s+| Ca - Mg| H\+Al| Observação|$)"
+        r"(\d{1,4})\s+"         # K
+        r"(.+?)(?=\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d+[,.]\d+\s+\d{4,5}\s+| Ca - Mg| H\+Al| Observação|$)"
     )
 
     for m in padrao.finditer(texto):
@@ -175,11 +178,50 @@ def analisar_modelo_novo(texto_total):
         k = m.group(8)
         resto = m.group(9).strip().split()
 
-        if len(resto) < 20:
+        if len(resto) < 12:
             continue
 
         def pega(pos):
             return resto[pos] if pos < len(resto) else "X.XX"
+
+        mg = pega(0)
+        h_al = pega(1)
+        mg_t_percent = pega(2)
+        k_t_percent = pega(3)
+        m_percent = pega(4)
+        ph_h2o = pega(5)
+        ph_cacl2 = pega(6)
+
+        resto2 = resto[7:]
+
+        p_rem = "X.XX"
+        p = "X.XX"
+        s = "X.XX"
+        b = "X.XX"
+        cu = "X.XX"
+        mn = "X.XX"
+        fe = "X.XX"
+        zn = "X.XX"
+        mo = "X.XX"
+
+        if len(resto2) >= 17:
+            p_rem = resto2[0]
+            b = resto2[1]
+            cu = resto2[3]
+            mn = resto2[4]
+            fe = resto2[6]
+            zn = resto2[9]
+            mo = resto2[10]
+            p = resto2[-4]
+            s = resto2[-1]
+
+        elif len(resto2) >= 10:
+            p_rem = resto2[0]
+            b = resto2[1]
+            zn = resto2[-7] if len(resto2) >= 7 else "X.XX"
+            mo = resto2[-6] if len(resto2) >= 6 else "X.XX"
+            p = resto2[-2]
+            s = resto2[-1]
 
         item = {
             "numero": numero_amostra,
@@ -191,21 +233,22 @@ def analisar_modelo_novo(texto_total):
             "v_percent": v_percent,
             "ca_t_percent": ca_t_percent,
             "k": k,
-            "mg": pega(0),
-            "h_al": pega(1),
-            "mg_t_percent": pega(2),
-            "m_percent": pega(4),
-            "ph_h2o": pega(5),
-            "ph_cacl2": pega(6),
-            "p_rem": pega(21),
-            "mo": pega(18),
-            "zn": pega(16),
-            "fe": pega(14),
-            "mn": pega(12),
-            "cu": pega(10),
-            "b": pega(8),
-            "p": pega(20),
-            "s": pega(23),
+            "mg": mg,
+            "h_al": h_al,
+            "mg_t_percent": mg_t_percent,
+            "k_t_percent": k_t_percent,
+            "m_percent": m_percent,
+            "ph_h2o": ph_h2o,
+            "ph_cacl2": ph_cacl2,
+            "p_rem": p_rem,
+            "mo": mo,
+            "zn": zn,
+            "fe": fe,
+            "mn": mn,
+            "cu": cu,
+            "b": b,
+            "p": p,
+            "s": s,
         }
 
         preencher_diagnosticos(item)
