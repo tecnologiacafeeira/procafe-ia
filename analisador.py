@@ -17,6 +17,17 @@ def numero(valor):
         return None
 
 
+def eh_valor(valor):
+    return numero(valor) is not None
+
+
+def primeiro_valor(lista, padrao="X.XX"):
+    for item in lista:
+        if eh_valor(item):
+            return item
+    return padrao
+
+
 def classificar(valor, baixo_max, medio_max):
     if valor is None:
         return "Sem dado"
@@ -108,7 +119,6 @@ def analisar_modelo_antigo(texto_total):
 
     for i, linha in enumerate(linhas):
         if re.match(r"^\d{2}-", linha):
-
             valores_antes = linhas[max(0, i - 6):i]
             valores_depois = linhas[i + 1:i + 25]
 
@@ -151,7 +161,7 @@ def analisar_modelo_antigo(texto_total):
     return dados
 
 
-def analisar_modelo_novo(texto_total):
+def analisar_modelo_procafe(texto_total):
     texto = " ".join(texto_total.split())
     dados = []
 
@@ -160,7 +170,7 @@ def analisar_modelo_novo(texto_total):
         r"(\d+[,.]\d+)\s+"      # Al
         r"(\d+[,.]\d+)\s+"      # T
         r"(\d+[,.]\d+)\s+"      # V
-        r"(\d{4,5})\s+"         # Número da amostra
+        r"(\d{4,5})\s+"         # Amostra
         r"(\d+[,.]\d+)\s+"      # Ca/T
         r"(.+?)\s+"             # Identificação
         r"(\d{1,4})\s+"         # K
@@ -192,7 +202,7 @@ def analisar_modelo_novo(texto_total):
         ph_h2o = pega(5)
         ph_cacl2 = pega(6)
 
-        resto2 = resto[7:]
+        tail = resto[7:]
 
         p_rem = "X.XX"
         p = "X.XX"
@@ -204,28 +214,30 @@ def analisar_modelo_novo(texto_total):
         zn = "X.XX"
         mo = "X.XX"
 
-        if len(resto2) >= 17:
-    p_rem = resto2[14]
-    p = resto2[13]
-    b = resto2[1]
-    cu = resto2[3]
-    mn = resto2[4]
-    fe = resto2[6] if resto2[6] != "X.XX" else resto2[7]
-    zn = resto2[9]
-    mo = resto2[10]
+        # Padrão completo, como laudos com Cu, Mn, Fe, Zn, MO, P, P-rem e S
+        if len(tail) >= 17:
+            p_rem = tail[14]
+            p = tail[13]
+            b = tail[1]
+            cu = tail[3]
+            mn = tail[4]
+            fe = primeiro_valor([tail[6], tail[7]])
+            zn = tail[9]
+            mo = tail[10]
+            s = primeiro_valor([tail[15], tail[16]])
 
-    if resto2[15] != "X.XX":
-        s = resto2[15]
-    else:
-        s = resto2[16]
+        # Padrão mais curto, quando vários micronutrientes vêm como X.XX
+        elif len(tail) >= 10:
+            p_rem = tail[0]
+            b = tail[1]
+            mo = tail[-5]
+            p = tail[-2]
+            s = tail[-1]
 
-elif len(resto2) >= 10:
-    p_rem = resto2[0]
-    b = resto2[1]
-    zn = resto2[5]
-    mo = resto2[7]
-    p = resto2[-2]
-    s = resto2[-1]
+            if len(tail) >= 12:
+                zn = primeiro_valor([tail[-7], tail[-6]])
+            elif len(tail) >= 11:
+                zn = tail[-6]
 
         item = {
             "numero": numero_amostra,
@@ -271,7 +283,7 @@ def analisar_pdf(pdf_path):
     if dados:
         return dados
 
-    dados = analisar_modelo_novo(texto_total)
+    dados = analisar_modelo_procafe(texto_total)
     if dados:
         return dados
 
