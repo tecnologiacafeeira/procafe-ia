@@ -211,7 +211,7 @@ def analisar_modelo_novo(texto_total):
             mn = resto2[4]
             fe = resto2[6]
             zn = resto2[9]
-            mo = resto2[10]
+            mo = resto2[-5]
             p = resto2[-4]
             s = resto2[-1]
 
