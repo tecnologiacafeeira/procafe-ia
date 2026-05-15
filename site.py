@@ -310,23 +310,23 @@ h1, h2, h3, h4, p, span, label {{
     }}
 }}
 
-[data-testid="stFileUploader"] > label {
+[data-testid="stFileUploader"] > label {{
     display: none !important;
-}
+}}
 
-[data-testid="stFileUploader"] section {
+[data-testid="stFileUploader"] section {{
     border: none !important;
     background: transparent !important;
     padding: 0 !important;
-}
+}}
 
-[data-testid="stFileUploaderDropzone"] {
+[data-testid="stFileUploaderDropzone"] {{
     opacity: 0 !important;
     height: 0px !important;
     min-height: 0px !important;
     padding: 0 !important;
     border: none !important;
-}
+}}
 
 </style>
 """, unsafe_allow_html=True)
