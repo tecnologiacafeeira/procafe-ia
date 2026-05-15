@@ -433,7 +433,7 @@ st.download_button(
 
 st.markdown("## Diagnóstico das Amostras")
 
-    for item in dados:
+for item in dados:
 
         with st.expander(f"🌱 {item['numero']} - {item['nome']}"):
 
