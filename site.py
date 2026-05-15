@@ -1,11 +1,20 @@
 import streamlit as st
 from analisador import analisar_pdf, gerar_recomendacoes
+import base64
+import os
 
 st.set_page_config(
     page_title="Fundação Procafé - Diagnóstico Inteligente",
     page_icon="🌱",
     layout="wide"
 )
+
+
+def carregar_logo_base64(caminho):
+    if os.path.exists(caminho):
+        with open(caminho, "rb") as img:
+            return base64.b64encode(img.read()).decode()
+    return ""
 
 
 def cor_diagnostico(texto):
@@ -20,23 +29,25 @@ def cor_diagnostico(texto):
     return texto
 
 
-st.markdown("""
+logo_base64 = carregar_logo_base64("assets/logo.png")
+
+st.markdown(f"""
 <style>
-.stApp {
+.stApp {{
     background:
-        linear-gradient(rgba(245, 239, 225, 0.80), rgba(245, 239, 225, 0.86)),
+        linear-gradient(rgba(245,239,225,0.78), rgba(245,239,225,0.86)),
         url("https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1800");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-}
+}}
 
-.block-container {
+.block-container {{
     max-width: 1180px;
-    padding-top: 35px;
-}
+    padding-top: 36px;
+}}
 
-.hero {
+.hero {{
     background: linear-gradient(135deg, #064d2c, #08743b);
     border-radius: 26px;
     padding: 34px 48px;
@@ -45,81 +56,81 @@ st.markdown("""
     display: flex;
     align-items: center;
     gap: 36px;
-}
+}}
 
-.logo-img {
+.logo-img {{
     width: 155px;
     height: 155px;
     object-fit: contain;
-}
+}}
 
-.divider {
+.divider {{
     width: 2px;
     height: 120px;
     background: rgba(255,255,255,0.75);
-}
+}}
 
-.hero-text h1 {
+.hero-text h1 {{
     color: white !important;
     font-size: 50px !important;
     margin: 0;
     letter-spacing: 1px;
-}
+}}
 
-.hero-text h3 {
+.hero-text h3 {{
     color: white !important;
     font-size: 34px !important;
     font-weight: 400;
     margin-top: 8px;
-}
+}}
 
-.main-card {
+.main-card {{
     background: rgba(255,250,235,0.96);
     border-radius: 22px;
     padding: 32px;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.18);
     margin-bottom: 26px;
-}
+}}
 
-.feature-row {
+.feature-row {{
     display: grid;
     grid-template-columns: 38% 62%;
     gap: 28px;
     align-items: center;
     padding: 26px 0;
     border-bottom: 1px solid rgba(120,90,40,0.22);
-}
+}}
 
-.feature-row:last-child {
+.feature-row:last-child {{
     border-bottom: none;
-}
+}}
 
-.feature-left {
+.feature-left {{
     display: flex;
     gap: 20px;
     align-items: flex-start;
-}
+}}
 
-.feature-icon {
+.feature-icon {{
     font-size: 42px;
     color: #075c34;
     min-width: 52px;
-}
+}}
 
-.feature-title {
+.feature-title {{
     font-size: 25px;
     color: #073d25;
     font-weight: 800;
     margin-bottom: 8px;
-}
+}}
 
-.feature-desc {
+.feature-desc {{
     font-size: 17px;
     color: #25362d;
     line-height: 1.45;
-}
+}}
 
-.action-box {
+.action-box {{
     background: #eef2df;
     border-radius: 14px;
     padding: 24px 28px;
@@ -129,57 +140,49 @@ st.markdown("""
     justify-content: space-between;
     align-items: center;
     border: 1px solid rgba(7,92,52,0.15);
-}
+}}
 
-.info-card {
-    background: rgba(255,255,255,0.96);
-    border-radius: 18px;
-    padding: 20px 24px;
-    border-left: 7px solid #08743b;
-    box-shadow: 0px 3px 14px rgba(0,0,0,0.10);
-    margin-bottom: 22px;
-}
-
-section[data-testid="stFileUploader"] {
+section[data-testid="stFileUploader"] {{
     background: white !important;
     padding: 18px !important;
     border-radius: 18px !important;
     border: 2px dashed #cbb98a !important;
-}
+    margin-bottom: 24px !important;
+}}
 
-section[data-testid="stFileUploader"] * {
+section[data-testid="stFileUploader"] * {{
     color: #1d2b1f !important;
-}
+}}
 
-section[data-testid="stFileUploader"] button {
+section[data-testid="stFileUploader"] button {{
     background: #08743b !important;
     color: white !important;
     border-radius: 12px !important;
     border: none !important;
-}
+}}
 
-section[data-testid="stFileUploader"] button * {
+section[data-testid="stFileUploader"] button * {{
     color: white !important;
-}
+}}
 
-div[data-testid="stExpander"] {
+div[data-testid="stExpander"] {{
     background: rgba(255,255,255,0.97) !important;
     border-radius: 18px !important;
     border: 1px solid #d8c9a5 !important;
     overflow: hidden;
     box-shadow: 0px 3px 14px rgba(0,0,0,0.10);
     margin-bottom: 16px;
-}
+}}
 
-div[data-testid="stExpander"] * {
+div[data-testid="stExpander"] * {{
     color: #1d2b1f !important;
-}
+}}
 
-h1, h2, h3, h4, p, span, label {
+h1, h2, h3, h4, p, span, label {{
     color: #1d2b1f !important;
-}
+}}
 
-.footer-card {
+.footer-card {{
     background: rgba(255,250,235,0.96);
     border-radius: 18px;
     padding: 24px;
@@ -189,59 +192,65 @@ h1, h2, h3, h4, p, span, label {
     gap: 18px;
     color: #073d25;
     font-weight: 800;
-}
+}}
 
-.footer-card small {
+.footer-card small {{
     display: block;
     font-weight: 400;
     color: #25362d;
     margin-top: 4px;
-}
+}}
 
-@media (max-width: 768px) {
-    .stApp {
+@media (max-width: 768px) {{
+    .stApp {{
         background-attachment: scroll;
-    }
+    }}
 
-    .hero {
+    .hero {{
         flex-direction: column;
         text-align: center;
         padding: 26px;
-    }
+    }}
 
-    .divider {
+    .divider {{
         display: none;
-    }
+    }}
 
-    .logo-img {
+    .logo-img {{
         width: 135px;
         height: 135px;
-    }
+    }}
 
-    .hero-text h1 {
+    .hero-text h1 {{
         font-size: 34px !important;
-    }
+    }}
 
-    .hero-text h3 {
+    .hero-text h3 {{
         font-size: 22px !important;
-    }
+    }}
 
-    .main-card {
+    .main-card {{
         padding: 22px;
-    }
+    }}
 
-    .feature-row {
+    .feature-row {{
         grid-template-columns: 1fr;
         gap: 16px;
-    }
-}
+    }}
+}}
 </style>
 """, unsafe_allow_html=True)
 
 
-st.markdown("""
+if logo_base64:
+    logo_html = f'<img src="data:image/png;base64,{logo_base64}" class="logo-img">'
+else:
+    logo_html = '<div style="font-size:80px;">🌱</div>'
+
+
+st.markdown(f"""
 <div class="hero">
-    <img src="https://github.com/tecnologiacafeeira/procafe-ia/blob/main/assets/logo.png?raw=true" class="logo-img">
+    {logo_html}
     <div class="divider"></div>
     <div class="hero-text">
         <h1>FUNDAÇÃO PROCAFÉ</h1>
@@ -292,7 +301,6 @@ st.markdown("""
             <span>⌄</span>
         </div>
     </div>
-
     <div class="feature-row">
         <div class="feature-left">
             <div class="feature-icon">🌿</div>
@@ -306,7 +314,6 @@ st.markdown("""
             <span>⌄</span>
         </div>
     </div>
-
     <div class="feature-row">
         <div class="feature-left">
             <div class="feature-icon">📄</div>
