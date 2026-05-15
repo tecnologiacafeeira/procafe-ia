@@ -271,18 +271,17 @@ st.markdown("""
             </div>
         </div>
         <div class="action-box">
-            <span>Arraste e solte o arquivo ou clique para selecionar</span>
+            <span>Arraste e solte o arquivo abaixo ou clique para selecionar</span>
             <span>PDF</span>
         </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-
 arquivo = st.file_uploader(
-    "Selecione o laudo em PDF",
+    "Arraste e solte o arquivo aqui",
     type=["pdf"],
-    label_visibility="visible"
+    label_visibility="collapsed"
 )
 
 
