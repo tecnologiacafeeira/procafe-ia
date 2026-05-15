@@ -205,23 +205,27 @@ def analisar_modelo_novo(texto_total):
         mo = "X.XX"
 
         if len(resto2) >= 17:
-            p_rem = resto2[0]
-            b = resto2[1]
-            cu = resto2[3]
-            mn = resto2[4]
-            fe = resto2[6]
-            zn = resto2[9]
-            mo = resto2[-5]
-            p = resto2[-4]
-            s = resto2[-1]
+    p_rem = resto2[14]
+    p = resto2[13]
+    b = resto2[1]
+    cu = resto2[3]
+    mn = resto2[4]
+    fe = resto2[6] if resto2[6] != "X.XX" else resto2[7]
+    zn = resto2[9]
+    mo = resto2[10]
 
-        elif len(resto2) >= 10:
-            p_rem = resto2[0]
-            b = resto2[1]
-            zn = resto2[-7] if len(resto2) >= 7 else "X.XX"
-            mo = resto2[-6] if len(resto2) >= 6 else "X.XX"
-            p = resto2[-2]
-            s = resto2[-1]
+    if resto2[15] != "X.XX":
+        s = resto2[15]
+    else:
+        s = resto2[16]
+
+elif len(resto2) >= 10:
+    p_rem = resto2[0]
+    b = resto2[1]
+    zn = resto2[5]
+    mo = resto2[7]
+    p = resto2[-2]
+    s = resto2[-1]
 
         item = {
             "numero": numero_amostra,
