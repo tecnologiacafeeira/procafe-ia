@@ -202,7 +202,7 @@ def analisar_modelo_procafe(texto_total):
         ph_h2o = pega(5)
         ph_cacl2 = pega(6)
 
-                if len(resto) >= 24:
+        if len(resto) >= 24:
             p_rem = pega(21)
             p = pega(20)
             s = pega(23)
