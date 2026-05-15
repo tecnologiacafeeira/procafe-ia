@@ -2,6 +2,11 @@ import streamlit as st
 from analisador import analisar_pdf, gerar_recomendacoes
 import base64
 import os
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from io import BytesIO
 
 st.set_page_config(
     page_title="Fundação Procafé - Diagnóstico Inteligente",
@@ -27,6 +32,72 @@ def cor_diagnostico(texto):
     elif "Sem dado" in texto:
         return "⚪ Sem dado"
     return texto
+
+def gerar_pdf_relatorio(dados):
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=30,
+        leftMargin=30,
+        topMargin=30,
+        bottomMargin=30
+    )
+
+    estilos = getSampleStyleSheet()
+    elementos = []
+
+    elementos.append(Paragraph("Fundação Procafé", estilos["Title"]))
+    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", estilos["Heading2"]))
+    elementos.append(Spacer(1, 18))
+
+    for item in dados:
+        elementos.append(Paragraph(f"Amostra {item['numero']} - {item['nome']}", estilos["Heading2"]))
+
+        tabela = [
+            ["Parâmetro", "Valor", "Diagnóstico"],
+            ["pH H2O", item["ph_h2o"], item["diag_ph"]],
+            ["pH CaCl2", item["ph_cacl2"], ""],
+            ["M.O.", item["mo"], item["diag_mo"]],
+            ["V%", item["v_percent"], item["diag_v"]],
+            ["Al", item["al"], item["diag_al"]],
+            ["H + Al", item["h_al"], item["diag_h_al"]],
+            ["P", item["p"], item["diag_p"]],
+            ["K", item["k"], item["diag_k"]],
+            ["Ca", item["ca"], item["diag_ca"]],
+            ["Mg", item["mg"], item["diag_mg"]],
+            ["S", item["s"], item["diag_s"]],
+            ["Zn", item["zn"], item["diag_zn"]],
+            ["Fe", item["fe"], item["diag_fe"]],
+            ["Mn", item["mn"], item["diag_mn"]],
+            ["Cu", item["cu"], item["diag_cu"]],
+            ["B", item["b"], item["diag_b"]],
+        ]
+
+        table = Table(tabela, colWidths=[120, 100, 160])
+        table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#08743b")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f7f6f2")),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ]))
+
+        elementos.append(table)
+        elementos.append(Spacer(1, 12))
+
+        elementos.append(Paragraph("Recomendações:", estilos["Heading3"]))
+        for rec in gerar_recomendacoes(item):
+            elementos.append(Paragraph(f"- {rec}", estilos["Normal"]))
+
+        elementos.append(Spacer(1, 22))
+
+    doc.build(elementos)
+
+    buffer.seek(0)
+    return buffer
 
 
 logo_base64 = carregar_logo_base64("assets/logo.png")
@@ -350,6 +421,15 @@ if arquivo is not None:
         st.stop()
 
     st.success("Laudo processado com sucesso!")
+
+    pdf = gerar_pdf_relatorio(dados)
+
+st.download_button(
+    label="📄 Baixar relatório técnico em PDF",
+    data=pdf,
+    file_name="relatorio_procafe.pdf",
+    mime="application/pdf"
+)
 
     st.markdown("## Diagnóstico das Amostras")
 
