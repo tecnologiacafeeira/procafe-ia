@@ -202,16 +202,31 @@ def analisar_modelo_procafe(texto_total):
         ph_h2o = pega(5)
         ph_cacl2 = pega(6)
 
-        p_rem = pega(21)
-        p = pega(20)
-        s = pega(22)
+       # padrão completo
+if len(resto) >= 24:
+    p_rem = pega(21)
+    p = pega(20)
+    s = primeiro_valor([pega(22), pega(23)])
 
-        b = pega(8)
-        cu = pega(10)
-        mn = pega(11)
-        fe = pega(13)
-        zn = pega(16)
-        mo = pega(17)
+    b = pega(8)
+    cu = pega(10)
+    mn = pega(11)
+    fe = primeiro_valor([pega(13), pega(14)])
+    zn = pega(16)
+    mo = pega(17)
+
+# padrão curto
+else:
+    p_rem = pega(7)
+    p = pega(17)
+    s = pega(18)
+
+    b = pega(8)
+    cu = pega(10)
+    mn = pega(11)
+    fe = pega(13)
+    zn = pega(12)
+    mo = pega(14)
 
         item = {
             "numero": numero_amostra,
