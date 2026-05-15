@@ -361,31 +361,6 @@ st.markdown("""
         </div>
     </div>
 
-    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0;">
-        <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="font-size:42px;">📄</div>
-            <div>
-                <div class="feature-title">Relatório Técnico</div>
-                <div class="feature-desc">Após enviar o laudo, baixe o relatório técnico completo.</div>
-            </div>
-        </div>
-        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
-            <span>📄 RELATÓRIO PDF</span>
-            <span>⌄</span>
-        </div>
-    </div>
-</div>
-
-<div class="footer-card">
-    <div style="font-size:42px;">🛡️</div>
-    <div>
-        Tecnologia e conhecimento a serviço da cafeicultura
-        <small>Fundação Procafé – Inovação para uma cafeicultura sustentável</small>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-
 if arquivo is not None:
 
     with open("temp.pdf", "wb") as f:
