@@ -346,20 +346,6 @@ st.markdown("""
             <span>⌄</span>
         </div>
     </div>
-
-    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0; border-bottom:1px solid rgba(120,90,40,0.22);">
-        <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="font-size:42px;">🌿</div>
-            <div>
-                <div class="feature-title">Recomendações Agronômicas</div>
-                <div class="feature-desc">Sugestões personalizadas para melhoria da fertilidade do solo.</div>
-            </div>
-        </div>
-        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
-            <span>🌱 VER RECOMENDAÇÕES</span>
-            <span>⌄</span>
-        </div>
-    </div>
     """, unsafe_allow_html=True)
 
 if arquivo is not None:
