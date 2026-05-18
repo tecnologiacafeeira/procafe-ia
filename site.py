@@ -52,7 +52,7 @@ def gerar_pdf_relatorio(dados):
     elementos = []
 
     elementos.append(Paragraph("Fundação Procafé", estilos["Title"]))
-    elementos.append(Paragraph("&nbsp;&nbsp;Relatório Técnico - Diagnóstico Inteligente de Solo", estilos["Heading2"]))
+    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", estilos["Heading2"]))
     elementos.append(Spacer(1, 18))
 
     for item in dados:
