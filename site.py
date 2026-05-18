@@ -282,6 +282,44 @@ h1, h2, h3, h4, p, span, label {{
     .card {{
         padding: 22px;
     }}
+
+    .card div[style*="grid-template-columns"] {
+    display: block !important;
+}
+
+.card div[style*="display:flex"] {
+    display: block !important;
+    text-align: center !important;
+}
+
+.feature-title {
+    font-size: 26px !important;
+    text-align: center !important;
+}
+
+.feature-desc {
+    font-size: 16px !important;
+    text-align: center !important;
+}
+
+.card div[style*="background:#eef2df"] {
+    margin-top: 20px !important;
+    display: block !important;
+    text-align: center !important;
+}
+
+.hero {
+    margin-top: 15px !important;
+}
+
+.hero-text h1 {
+    font-size: 36px !important;
+    line-height: 1.15 !important;
+}
+
+.hero-text h3 {
+    font-size: 22px !important;
+}
 }}
 </style>
 """, unsafe_allow_html=True)
