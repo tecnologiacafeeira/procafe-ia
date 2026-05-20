@@ -92,19 +92,30 @@ def gerar_pdf_relatorio(dados):
         elementos.append(Spacer(1, 12))
 
         elementos.append(Paragraph("Recomendações:", estilos["Heading3"]))
-        for rec in gerar_recomendacoes(item):
-            
-            rec_pdf = (
-    rec.replace("🔴", "[CRÍTICO]")
-       .replace("🟡", "[ATENÇÃO]")
-       .replace("🟢", "[POSITIVO]")
-)
 
-        elementos.append(
-    Paragraph(f"- {rec_pdf}", estilos["Normal"])
-)
+for rec in gerar_recomendacoes(item):
 
-        elementos.append(Spacer(1, 22))
+    rec_pdf = (
+        rec.replace("🔴", "")
+           .replace("🟡", "")
+           .replace("🟢", "")
+           .replace("✅", "")
+           .strip()
+    )
+
+    if "PROBLEMAS CRÍTICOS" in rec_pdf:
+        elementos.append(Paragraph("<b>PROBLEMAS CRÍTICOS</b>", estilos["Heading3"]))
+
+    elif "PONTOS DE ATENÇÃO" in rec_pdf:
+        elementos.append(Paragraph("<b>PONTOS DE ATENÇÃO</b>", estilos["Heading3"]))
+
+    elif "PONTOS POSITIVOS" in rec_pdf:
+        elementos.append(Paragraph("<b>PONTOS POSITIVOS</b>", estilos["Heading3"]))
+
+    else:
+        elementos.append(Paragraph(f"- {rec_pdf}", estilos["Normal"]))
+
+elementos.append(Spacer(1, 22))
 
     doc.build(elementos)
     buffer.seek(0)
