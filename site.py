@@ -93,7 +93,15 @@ def gerar_pdf_relatorio(dados):
 
         elementos.append(Paragraph("Recomendações:", estilos["Heading3"]))
         for rec in gerar_recomendacoes(item):
-            elementos.append(Paragraph(f"- {rec}", estilos["Normal"]))
+            rec_pdf = (
+    rec.replace("🔴", "[CRÍTICO]")
+       .replace("🟡", "[ATENÇÃO]")
+       .replace("🟢", "[POSITIVO]")
+)
+
+elementos.append(
+    Paragraph(f"- {rec_pdf}", estilos["Normal"])
+)
 
         elementos.append(Spacer(1, 22))
 
