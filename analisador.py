@@ -290,7 +290,9 @@ def analisar_pdf(pdf_path):
 
 
 def gerar_recomendacoes(item):
-    recomendacoes = []
+    criticos = []
+    atencao = []
+    positivos = []
 
     ph = numero(item.get("ph_h2o"))
     v = numero(item.get("v_percent"))
@@ -308,92 +310,125 @@ def gerar_recomendacoes(item):
     mn = numero(item.get("mn"))
     s = numero(item.get("s"))
 
-    if ph is not None:
-        if ph < 5.0:
-            recomendacoes.append("pH baixo: avaliar necessidade de calagem para corrigir a acidez do solo.")
-        elif ph > 6.2:
-            recomendacoes.append("pH elevado: evitar calagem sem nova avaliação técnica, pois pode reduzir disponibilidade de alguns micronutrientes.")
-        else:
-            recomendacoes.append("pH em faixa adequada para o cafeeiro.")
+    # ACIDEZ / CALAGEM
+    if ph is not None and ph < 5.0:
+        criticos.append("pH baixo: solo ácido, com possível limitação ao desenvolvimento radicular do cafeeiro.")
 
-    if v is not None:
-        if v < 50:
-            recomendacoes.append("Saturação por bases baixa: há indicativo de necessidade de calagem.")
-        elif v > 70:
-            recomendacoes.append("Saturação por bases elevada: atenção para excesso de bases e possível desequilíbrio entre Ca, Mg e K.")
-        else:
-            recomendacoes.append("Saturação por bases em faixa intermediária/adequada.")
+    if v is not None and v < 50:
+        criticos.append("Saturação por bases baixa: forte indicativo de necessidade de calagem.")
 
-    if al is not None:
-        if al > 0.3:
-            recomendacoes.append("Alumínio presente em nível preocupante: pode limitar o desenvolvimento radicular. Avaliar correção da acidez.")
-        else:
-            recomendacoes.append("Alumínio em nível baixo, sem indicativo forte de toxidez.")
+    if al is not None and al > 0.3:
+        criticos.append("Alumínio elevado: pode causar toxidez e reduzir o crescimento das raízes.")
 
+    if ph is not None and v is not None and al is not None:
+        if ph < 5.0 and v < 50 and al > 0.3:
+            criticos.append("Conjunto pH baixo + V% baixo + alumínio elevado indica prioridade alta para correção da acidez.")
+
+    # MATÉRIA ORGÂNICA
     if mo is not None:
         if mo < 2.0:
-            recomendacoes.append("Matéria orgânica baixa: aumentar cobertura vegetal, palhada, compostos orgânicos ou manejo que favoreça acúmulo de matéria orgânica.")
-        elif mo > 4.0:
-            recomendacoes.append("Matéria orgânica boa: manter práticas de conservação do solo.")
+            atencao.append("Matéria orgânica baixa: melhorar cobertura do solo, palhada e uso de práticas conservacionistas.")
+        elif mo <= 4.0:
+            positivos.append("Matéria orgânica em faixa média.")
         else:
-            recomendacoes.append("Matéria orgânica em nível médio.")
+            positivos.append("Boa matéria orgânica: manter o manejo conservacionista.")
 
+    # FÓSFORO
     if p is not None:
         if p < 10:
-            recomendacoes.append("Fósforo baixo: avaliar adubação fosfatada, principalmente para fortalecimento radicular.")
-        elif p > 30:
-            recomendacoes.append("Fósforo alto: evitar aplicações excessivas e ajustar a adubação conforme produtividade esperada.")
+            criticos.append("Fósforo baixo: pode limitar enraizamento, vigor vegetativo e produtividade.")
+        elif p <= 20:
+            atencao.append("Fósforo em nível médio: acompanhar e ajustar a adubação conforme produtividade esperada.")
         else:
-            recomendacoes.append("Fósforo em faixa média.")
+            positivos.append("Fósforo em nível adequado ou alto.")
 
+    # POTÁSSIO
     if k is not None:
         if k < 100:
-            recomendacoes.append("Potássio baixo: nutriente importante para enchimento de grãos, resistência e produtividade. Avaliar adubação potássica.")
-        elif k > 180:
-            recomendacoes.append("Potássio alto: atenção ao equilíbrio com cálcio e magnésio.")
+            criticos.append("Potássio baixo: pode prejudicar enchimento de grãos, resistência e produtividade.")
+        elif k <= 160:
+            positivos.append("Potássio em faixa adequada/intermediária.")
         else:
-            recomendacoes.append("Potássio em faixa adequada/intermediária.")
+            atencao.append("Potássio alto: observar equilíbrio com cálcio e magnésio.")
 
+    # CÁLCIO E MAGNÉSIO
     if ca is not None:
         if ca < 1.5:
-            recomendacoes.append("Cálcio baixo: avaliar calagem e equilíbrio de bases.")
-        elif ca > 4.0:
-            recomendacoes.append("Cálcio alto: observar possível desequilíbrio com Mg e K.")
+            criticos.append("Cálcio baixo: avaliar calagem e equilíbrio de bases.")
+        elif ca <= 3.0:
+            positivos.append("Cálcio em faixa adequada/intermediária.")
         else:
-            recomendacoes.append("Cálcio em nível adequado/intermediário.")
+            atencao.append("Cálcio alto: observar possível desequilíbrio com Mg e K.")
 
     if mg is not None:
         if mg < 0.5:
-            recomendacoes.append("Magnésio baixo: avaliar uso de calcário dolomítico ou fonte de magnésio.")
-        elif mg > 1.5:
-            recomendacoes.append("Magnésio alto: observar equilíbrio com cálcio e potássio.")
+            criticos.append("Magnésio baixo: avaliar calcário dolomítico ou fonte de magnésio.")
+        elif mg <= 1.0:
+            positivos.append("Magnésio em faixa adequada/intermediária.")
         else:
-            recomendacoes.append("Magnésio em nível adequado/intermediário.")
+            atencao.append("Magnésio alto: observar equilíbrio com cálcio e potássio.")
 
+    if ca is not None and mg is not None:
+        if ca > 3.5 and mg < 0.5:
+            atencao.append("Cálcio alto com magnésio baixo: possível desequilíbrio entre bases.")
+
+    # ENXOFRE
     if s is not None:
         if s < 5:
-            recomendacoes.append("Enxofre baixo: avaliar fonte sulfurada conforme manejo nutricional.")
+            atencao.append("Enxofre baixo: avaliar fonte sulfurada no manejo de adubação.")
         else:
-            recomendacoes.append("Enxofre sem deficiência evidente.")
+            positivos.append("Enxofre sem deficiência evidente.")
 
-    if zn is not None and zn < 1.0:
-        recomendacoes.append("Zinco baixo: pode afetar brotação e desenvolvimento vegetativo. Avaliar correção com fonte de zinco.")
+    # MICRONUTRIENTES
+    if zn is not None:
+        if zn < 1.0:
+            atencao.append("Zinco baixo: pode afetar brotação e desenvolvimento vegetativo.")
+        else:
+            positivos.append("Zinco sem deficiência evidente.")
 
-    if b is not None and b < 0.5:
-        recomendacoes.append("Boro baixo: atenção para florescimento, pegamento e crescimento de ramos. Avaliar correção com cautela.")
+    if b is not None:
+        if b < 0.5:
+            atencao.append("Boro baixo: atenção ao florescimento, pegamento e crescimento dos ramos.")
+        else:
+            positivos.append("Boro sem deficiência evidente.")
 
-    if cu is not None and cu < 0.5:
-        recomendacoes.append("Cobre baixo: avaliar necessidade de correção, considerando histórico de aplicações foliares e fungicidas cúpricos.")
+    if cu is not None:
+        if cu < 0.5:
+            atencao.append("Cobre baixo: avaliar correção considerando histórico de aplicações foliares.")
+        else:
+            positivos.append("Cobre sem deficiência evidente.")
 
-    if fe is not None and fe < 20:
-        recomendacoes.append("Ferro baixo: verificar pH, matéria orgânica e disponibilidade no solo.")
+    if fe is not None:
+        if fe < 20:
+            atencao.append("Ferro baixo: verificar pH, matéria orgânica e disponibilidade no solo.")
+        else:
+            positivos.append("Ferro sem deficiência evidente.")
 
-    if mn is not None and mn < 5:
-        recomendacoes.append("Manganês baixo: verificar disponibilidade, principalmente em solos com pH mais elevado.")
+    if mn is not None:
+        if mn < 5:
+            atencao.append("Manganês baixo: verificar disponibilidade, principalmente em solos com pH elevado.")
+        else:
+            positivos.append("Manganês sem deficiência evidente.")
 
-    if len(recomendacoes) == 0:
-        recomendacoes.append("Não foram identificados alertas principais. Manter acompanhamento periódico da fertilidade do solo.")
+    recomendacoes = []
 
-    recomendacoes.append("Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo.")
+    if criticos:
+        recomendacoes.append("🔴 PROBLEMAS CRÍTICOS")
+        recomendacoes.extend(criticos)
+
+    if atencao:
+        recomendacoes.append("🟡 PONTOS DE ATENÇÃO")
+        recomendacoes.extend(atencao)
+
+    if positivos:
+        recomendacoes.append("🟢 PONTOS POSITIVOS")
+        recomendacoes.extend(positivos)
+
+    if not recomendacoes:
+        recomendacoes.append("Não foram identificados alertas principais nesta amostra.")
+
+    recomendacoes.append(
+        "Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo."
+    )
 
     return recomendacoes
