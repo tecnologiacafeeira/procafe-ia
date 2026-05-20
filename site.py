@@ -93,33 +93,57 @@ def gerar_pdf_relatorio(dados):
 
         elementos.append(Paragraph("Recomendações:", estilos["Heading3"]))
 
-for rec in gerar_recomendacoes(item):
+        for rec in gerar_recomendacoes(item):
 
-    rec_pdf = (
-        rec.replace("🔴", "")
-           .replace("🟡", "")
-           .replace("🟢", "")
-           .replace("✅", "")
-           .strip()
-    )
+            rec_pdf = (
+                rec.replace("🔴", "")
+                   .replace("🟡", "")
+                   .replace("🟢", "")
+                   .replace("✅", "")
+                   .strip()
+            )
 
-    if "PROBLEMAS CRÍTICOS" in rec_pdf:
-        elementos.append(Paragraph("<b>PROBLEMAS CRÍTICOS</b>", estilos["Heading3"]))
+            if "PROBLEMAS CRÍTICOS" in rec_pdf:
 
-    elif "PONTOS DE ATENÇÃO" in rec_pdf:
-        elementos.append(Paragraph("<b>PONTOS DE ATENÇÃO</b>", estilos["Heading3"]))
+                elementos.append(
+                    Paragraph(
+                        "<b>PROBLEMAS CRÍTICOS</b>",
+                        estilos["Heading3"]
+                    )
+                )
 
-    elif "PONTOS POSITIVOS" in rec_pdf:
-        elementos.append(Paragraph("<b>PONTOS POSITIVOS</b>", estilos["Heading3"]))
+            elif "PONTOS DE ATENÇÃO" in rec_pdf:
 
-    else:
-        elementos.append(Paragraph(f"- {rec_pdf}", estilos["Normal"]))
+                elementos.append(
+                    Paragraph(
+                        "<b>PONTOS DE ATENÇÃO</b>",
+                        estilos["Heading3"]
+                    )
+                )
 
- elementos.append(Spacer(1, 22))
+            elif "PONTOS POSITIVOS" in rec_pdf:
 
- doc.build(elementos)
- buffer.seek(0)
- return buffer
+                elementos.append(
+                    Paragraph(
+                        "<b>PONTOS POSITIVOS</b>",
+                        estilos["Heading3"]
+                    )
+                )
+
+            else:
+
+                elementos.append(
+                    Paragraph(
+                        f"- {rec_pdf}",
+                        estilos["Normal"]
+                    )
+                )
+
+        elementos.append(Spacer(1, 22))
+
+    doc.build(elementos)
+    buffer.seek(0)
+    return buffer
 
 
 logo_base64 = carregar_logo_base64("assets/logo.png")
