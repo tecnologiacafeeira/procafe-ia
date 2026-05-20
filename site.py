@@ -90,7 +90,7 @@ header.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#08743b")),
         ("TEXTCOLOR", (0, 0), (-1, -1), colors.white),
         ("FONTNAME", (1, 0), (1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (1, 0), (1, 0), 24),
+        ("FONTSIZE", (1, 0), (1, 0), 1),
         ("ALIGN", (0, 0), (0, 0), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 18),
@@ -107,9 +107,9 @@ elementos.append(Paragraph("Fundação Procafé", titulo))
 elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", subtitulo))
 elementos.append(Spacer(1, 20))
 
-    for item in dados:
-        elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
-        elementos.append(Spacer(1, 8))
+for item in dados:
+    elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
+    elementos.append(Spacer(1, 8))
 
         tabela = [
             ["Parâmetro", "Valor", "Diagnóstico"],
