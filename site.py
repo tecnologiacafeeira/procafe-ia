@@ -100,12 +100,12 @@ header.setStyle(TableStyle([
         ("BOX", (0, 0), (-1, -1), 0, colors.HexColor("#08743b")),
     ]))
 
-    elementos.append(header)
-    elementos.append(Spacer(1, 22))
+elementos.append(header)
+elementos.append(Spacer(1, 22))
 
-    elementos.append(Paragraph("Fundação Procafé", titulo))
-    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", subtitulo))
-    elementos.append(Spacer(1, 20))
+elementos.append(Paragraph("Fundação Procafé", titulo))
+elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", subtitulo))
+elementos.append(Spacer(1, 20))
 
     for item in dados:
         elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
