@@ -6,7 +6,7 @@ from io import BytesIO
 
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 
 
@@ -62,9 +62,6 @@ def gerar_pdf_relatorio(dados):
     # Cabeçalho visual
     logo_path = "assets/logo.png"
 
-    if os.path.exists(logo_path):
-        from reportlab.platypus import Image
-        logo_pdf = Image(logo_path, width=70, height=70)
 titulo_header = Paragraph(
     """
     <font size=28><b>FUNDAÇÃO PROCAFÉ</b></font>
@@ -72,21 +69,22 @@ titulo_header = Paragraph(
     <font size=20>Diagnóstico Inteligente de Solo</font>
     """,
     ParagraphStyle(
-        'header',
+        "header",
         textColor=colors.white,
         leading=24
     )
 )
 
+if os.path.exists(logo_path):
+    from reportlab.platypus import Image
+    logo_pdf = Image(logo_path, width=70, height=70)
+else:
+    logo_pdf = ""
+
 header = Table(
     [[logo_pdf, titulo_header]],
     colWidths=[90, 420]
 )
-    else:
-        header = Table(
-            [["", "FUNDAÇÃO PROCAFÉ\nDiagnóstico Inteligente de Solo"]],
-            colWidths=[100, 360]
-        )
 
     header.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#08743b")),
