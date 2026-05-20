@@ -42,21 +42,63 @@ def gerar_pdf_relatorio(dados):
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=30,
-        leftMargin=30,
-        topMargin=30,
-        bottomMargin=30
+        rightMargin=35,
+        leftMargin=35,
+        topMargin=25,
+        bottomMargin=25
     )
 
     estilos = getSampleStyleSheet()
     elementos = []
 
-    elementos.append(Paragraph("Fundação Procafé", estilos["Title"]))
-    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", estilos["Heading2"]))
-    elementos.append(Spacer(1, 18))
+    titulo = estilos["Title"]
+    titulo.textColor = colors.HexColor("#08743b")
+
+    subtitulo = estilos["Heading2"]
+    subtitulo.alignment = 1
+
+    normal = estilos["Normal"]
+
+    # Cabeçalho visual
+    logo_path = "assets/logo.png"
+
+    if os.path.exists(logo_path):
+        from reportlab.platypus import Image
+        logo_pdf = Image(logo_path, width=70, height=70)
+        header = Table(
+            [[logo_pdf, "FUNDAÇÃO PROCAFÉ\nDiagnóstico Inteligente de Solo"]],
+            colWidths=[100, 360]
+        )
+    else:
+        header = Table(
+            [["", "FUNDAÇÃO PROCAFÉ\nDiagnóstico Inteligente de Solo"]],
+            colWidths=[100, 360]
+        )
+
+    header.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#08743b")),
+        ("TEXTCOLOR", (0, 0), (-1, -1), colors.white),
+        ("FONTNAME", (1, 0), (1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (1, 0), (1, 0), 24),
+        ("ALIGN", (0, 0), (0, 0), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 18),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 18),
+        ("TOPPADDING", (0, 0), (-1, -1), 22),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 22),
+        ("BOX", (0, 0), (-1, -1), 0, colors.HexColor("#08743b")),
+    ]))
+
+    elementos.append(header)
+    elementos.append(Spacer(1, 22))
+
+    elementos.append(Paragraph("Fundação Procafé", titulo))
+    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", subtitulo))
+    elementos.append(Spacer(1, 20))
 
     for item in dados:
-        elementos.append(Paragraph(f"Amostra {item['numero']} - {item['nome']}", estilos["Heading2"]))
+        elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
+        elementos.append(Spacer(1, 8))
 
         tabela = [
             ["Parâmetro", "Valor", "Diagnóstico"],
@@ -78,23 +120,25 @@ def gerar_pdf_relatorio(dados):
             ["B", item["b"], item["diag_b"]],
         ]
 
-        table = Table(tabela, colWidths=[120, 100, 180])
+        table = Table(tabela, colWidths=[150, 130, 190])
         table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#08743b")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, -1), 10),
+            ("GRID", (0, 0), (-1, -1), 0.4, colors.grey),
             ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f7f6f2")),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ]))
 
         elementos.append(table)
-        elementos.append(Spacer(1, 12))
+        elementos.append(Spacer(1, 18))
 
-        elementos.append(Paragraph("Recomendações:", estilos["Heading3"]))
+        elementos.append(Paragraph("<b>Recomendações:</b>", estilos["Heading3"]))
 
         for rec in gerar_recomendacoes(item):
-
             rec_pdf = (
                 rec.replace("🔴", "")
                    .replace("🟡", "")
@@ -104,42 +148,28 @@ def gerar_pdf_relatorio(dados):
             )
 
             if "PROBLEMAS CRÍTICOS" in rec_pdf:
-
-                elementos.append(
-                    Paragraph(
-                        "<b>PROBLEMAS CRÍTICOS</b>",
-                        estilos["Heading3"]
-                    )
-                )
-
+                elementos.append(Paragraph("<b>PROBLEMAS CRÍTICOS</b>", estilos["Heading3"]))
             elif "PONTOS DE ATENÇÃO" in rec_pdf:
-
-                elementos.append(
-                    Paragraph(
-                        "<b>PONTOS DE ATENÇÃO</b>",
-                        estilos["Heading3"]
-                    )
-                )
-
+                elementos.append(Paragraph("<b>PONTOS DE ATENÇÃO</b>", estilos["Heading3"]))
             elif "PONTOS POSITIVOS" in rec_pdf:
-
-                elementos.append(
-                    Paragraph(
-                        "<b>PONTOS POSITIVOS</b>",
-                        estilos["Heading3"]
-                    )
-                )
-
+                elementos.append(Paragraph("<b>PONTOS POSITIVOS</b>", estilos["Heading3"]))
             else:
-
-                elementos.append(
-                    Paragraph(
-                        f"- {rec_pdf}",
-                        estilos["Normal"]
-                    )
-                )
+                elementos.append(Paragraph(f"- {rec_pdf}", normal))
 
         elementos.append(Spacer(1, 22))
+
+    rodape = Table(
+        [["Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo."]],
+        colWidths=[500]
+    )
+
+    rodape.setStyle(TableStyle([
+        ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor("#08743b")),
+        ("TOPPADDING", (0, 0), (-1, -1), 10),
+        ("FONTSIZE", (0, 0), (-1, -1), 8),
+    ]))
+
+    elementos.append(rodape)
 
     doc.build(elementos)
     buffer.seek(0)
