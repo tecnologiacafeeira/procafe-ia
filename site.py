@@ -65,10 +65,23 @@ def gerar_pdf_relatorio(dados):
     if os.path.exists(logo_path):
         from reportlab.platypus import Image
         logo_pdf = Image(logo_path, width=70, height=70)
-        header = Table(
-            [[logo_pdf, "FUNDAÇÃO PROCAFÉ\nDiagnóstico Inteligente de Solo"]],
-            colWidths=[100, 360]
-        )
+titulo_header = Paragraph(
+    """
+    <font size=28><b>FUNDAÇÃO PROCAFÉ</b></font>
+    <br/><br/>
+    <font size=20>Diagnóstico Inteligente de Solo</font>
+    """,
+    ParagraphStyle(
+        'header',
+        textColor=colors.white,
+        leading=24
+    )
+)
+
+header = Table(
+    [[logo_pdf, titulo_header]],
+    colWidths=[90, 420]
+)
     else:
         header = Table(
             [["", "FUNDAÇÃO PROCAFÉ\nDiagnóstico Inteligente de Solo"]],
