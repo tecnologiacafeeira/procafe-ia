@@ -117,9 +117,9 @@ for rec in gerar_recomendacoes(item):
 
 elementos.append(Spacer(1, 22))
 
-    doc.build(elementos)
-    buffer.seek(0)
-    return buffer
+doc.build(elementos)
+buffer.seek(0)
+return buffer
 
 
 logo_base64 = carregar_logo_base64("assets/logo.png")
