@@ -5,8 +5,8 @@ import os
 from io import BytesIO
 
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
 
@@ -42,92 +42,21 @@ def gerar_pdf_relatorio(dados):
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=35,
-        leftMargin=35,
-        topMargin=25,
-        bottomMargin=25
+        rightMargin=30,
+        leftMargin=30,
+        topMargin=30,
+        bottomMargin=30
     )
 
     estilos = getSampleStyleSheet()
-
-    titulo_verde = ParagraphStyle(
-        "titulo_verde",
-        parent=estilos["Title"],
-        textColor=colors.HexColor("#08743b"),
-        alignment=1,
-        fontSize=18,
-        leading=22
-    )
-
-    subtitulo = ParagraphStyle(
-        "subtitulo",
-        parent=estilos["Heading2"],
-        alignment=1,
-        fontSize=13,
-        leading=16
-    )
-
-    header_style = ParagraphStyle(
-        "header_style",
-        textColor=colors.white,
-        fontName="Helvetica-Bold",
-        fontSize=26,
-        leading=30
-    )
-
-    header_sub_style = ParagraphStyle(
-        "header_sub_style",
-        textColor=colors.white,
-        fontName="Helvetica",
-        fontSize=18,
-        leading=22
-    )
-
     elementos = []
 
-    logo_path = "assets/logo.png"
-
-    if os.path.exists(logo_path):
-        logo_pdf = Image(logo_path, width=68, height=68)
-    else:
-        logo_pdf = ""
-
-    texto_header = [
-        Paragraph("FUNDAÇÃO PROCAFÉ", header_style),
-        Paragraph("Diagnóstico Inteligente de Solo", header_sub_style)
-    ]
-
-    header = Table(
-        [[logo_pdf, texto_header]],
-        colWidths=[95, 430],
-        rowHeights=[105]
-    )
-
-    header.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#08743b")),
-        ("ALIGN", (0, 0), (0, 0), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 18),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 18),
-        ("TOPPADDING", (0, 0), (-1, -1), 16),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 16),
-    ]))
-
-    elementos.append(header)
-    elementos.append(Spacer(1, 20))
-
-    elementos.append(Paragraph("Fundação Procafé", titulo_verde))
-    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", subtitulo))
-    elementos.append(Spacer(1, 24))
+    elementos.append(Paragraph("Fundação Procafé", estilos["Title"]))
+    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", estilos["Heading2"]))
+    elementos.append(Spacer(1, 18))
 
     for item in dados:
-        elementos.append(
-            Paragraph(
-                f"<b>Amostra {item['numero']} - {item['nome']}</b>",
-                estilos["Heading2"]
-            )
-        )
-        elementos.append(Spacer(1, 8))
+        elementos.append(Paragraph(f"Amostra {item['numero']} - {item['nome']}", estilos["Heading2"]))
 
         tabela = [
             ["Parâmetro", "Valor", "Diagnóstico"],
@@ -149,25 +78,23 @@ def gerar_pdf_relatorio(dados):
             ["B", item["b"], item["diag_b"]],
         ]
 
-        table = Table(tabela, colWidths=[150, 130, 190])
+        table = Table(tabela, colWidths=[120, 100, 180])
         table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#08743b")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("FONTSIZE", (0, 0), (-1, -1), 10),
-            ("GRID", (0, 0), (-1, -1), 0.4, colors.grey),
             ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f7f6f2")),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ]))
 
         elementos.append(table)
-        elementos.append(Spacer(1, 18))
+        elementos.append(Spacer(1, 12))
 
-        elementos.append(Paragraph("<b>Recomendações:</b>", estilos["Heading3"]))
+        elementos.append(Paragraph("Recomendações:", estilos["Heading3"]))
 
         for rec in gerar_recomendacoes(item):
+
             rec_pdf = (
                 rec.replace("🔴", "")
                    .replace("🟡", "")
@@ -177,30 +104,42 @@ def gerar_pdf_relatorio(dados):
             )
 
             if "PROBLEMAS CRÍTICOS" in rec_pdf:
-                elementos.append(Paragraph("<b>PROBLEMAS CRÍTICOS</b>", estilos["Heading3"]))
+
+                elementos.append(
+                    Paragraph(
+                        "<b>PROBLEMAS CRÍTICOS</b>",
+                        estilos["Heading3"]
+                    )
+                )
+
             elif "PONTOS DE ATENÇÃO" in rec_pdf:
-                elementos.append(Paragraph("<b>PONTOS DE ATENÇÃO</b>", estilos["Heading3"]))
+
+                elementos.append(
+                    Paragraph(
+                        "<b>PONTOS DE ATENÇÃO</b>",
+                        estilos["Heading3"]
+                    )
+                )
+
             elif "PONTOS POSITIVOS" in rec_pdf:
-                elementos.append(Paragraph("<b>PONTOS POSITIVOS</b>", estilos["Heading3"]))
+
+                elementos.append(
+                    Paragraph(
+                        "<b>PONTOS POSITIVOS</b>",
+                        estilos["Heading3"]
+                    )
+                )
+
             else:
-                elementos.append(Paragraph(f"- {rec_pdf}", estilos["Normal"]))
+
+                elementos.append(
+                    Paragraph(
+                        f"- {rec_pdf}",
+                        estilos["Normal"]
+                    )
+                )
 
         elementos.append(Spacer(1, 22))
-
-    rodape = Table(
-        [[
-            "Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo."
-        ]],
-        colWidths=[500]
-    )
-
-    rodape.setStyle(TableStyle([
-        ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor("#08743b")),
-        ("TOPPADDING", (0, 0), (-1, -1), 10),
-        ("FONTSIZE", (0, 0), (-1, -1), 8),
-    ]))
-
-    elementos.append(rodape)
 
     doc.build(elementos)
     buffer.seek(0)
@@ -365,7 +304,6 @@ h1, h2, h3, h4, p, span, label {{
         flex-direction: column;
         text-align: center;
         padding: 26px;
-        margin-top: 15px !important;
     }}
 
     .divider {{
@@ -378,8 +316,7 @@ h1, h2, h3, h4, p, span, label {{
     }}
 
     .hero-text h1 {{
-        font-size: 36px !important;
-        line-height: 1.15 !important;
+        font-size: 34px !important;
     }}
 
     .hero-text h3 {{
@@ -391,28 +328,41 @@ h1, h2, h3, h4, p, span, label {{
     }}
 
     .card div[style*="grid-template-columns"] {{
-        display: block !important;
+    display: block !important;
     }}
-
+    
     .card div[style*="display:flex"] {{
         display: block !important;
         text-align: center !important;
     }}
-
+    
     .feature-title {{
         font-size: 26px !important;
         text-align: center !important;
     }}
-
+    
     .feature-desc {{
         font-size: 16px !important;
         text-align: center !important;
     }}
-
+    
     .card div[style*="background:#eef2df"] {{
         margin-top: 20px !important;
         display: block !important;
         text-align: center !important;
+    }}
+    
+    .hero {{
+        margin-top: 15px !important;
+    }}
+    
+    .hero-text h1 {{
+        font-size: 36px !important;
+        line-height: 1.15 !important;
+    }}
+    
+    .hero-text h3 {{
+        font-size: 22px !important;
     }}
 }}
 </style>
@@ -478,45 +428,7 @@ st.markdown("""
             <span>⌄</span>
         </div>
     </div>
-
-    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0; border-bottom:1px solid rgba(120,90,40,0.22);">
-        <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="font-size:42px;">🌿</div>
-            <div>
-                <div class="feature-title">Recomendações Agronômicas</div>
-                <div class="feature-desc">Sugestões personalizadas para melhoria da fertilidade do solo.</div>
-            </div>
-        </div>
-        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
-            <span>🌱 VER RECOMENDAÇÕES</span>
-            <span>⌄</span>
-        </div>
-    </div>
-
-    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0;">
-        <div style="display:flex; gap:20px; align-items:flex-start;">
-            <div style="font-size:42px;">📄</div>
-            <div>
-                <div class="feature-title">Relatório Técnico</div>
-                <div class="feature-desc">Após enviar o laudo, baixe o relatório técnico completo.</div>
-            </div>
-        </div>
-        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
-            <span>📄 RELATÓRIO PDF</span>
-            <span>⌄</span>
-        </div>
-    </div>
-</div>
-
-<div class="footer-card">
-    <div style="font-size:42px;">🛡️</div>
-    <div>
-        Tecnologia e conhecimento a serviço da cafeicultura
-        <small>Fundação Procafé – Inovação para uma cafeicultura sustentável</small>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
+    """, unsafe_allow_html=True)
 
 if arquivo is not None:
 
