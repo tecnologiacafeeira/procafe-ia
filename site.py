@@ -86,7 +86,7 @@ header = Table(
     colWidths=[90, 420]
 )
 
-    header.setStyle(TableStyle([
+header.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#08743b")),
         ("TEXTCOLOR", (0, 0), (-1, -1), colors.white),
         ("FONTNAME", (1, 0), (1, 0), "Helvetica-Bold"),
