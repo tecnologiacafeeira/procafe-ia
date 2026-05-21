@@ -42,9 +42,9 @@ def gerar_pdf_relatorio(dados):
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=5,
-        leftMargin=5,
-        topMargin=2,
+        rightMargin=2,
+        leftMargin=2,
+        topMargin=0,
         bottomMargin=25
     )
 
