@@ -118,7 +118,7 @@ def gerar_pdf_relatorio(dados):
     for item in dados:
         titulo_amostra = f"Amostra {item['numero']} - {item['nome']}"
 
-        elementos.append(Spacer(1, 24))
+        elementos.append(Spacer(1, 30))
 
         tabela = [
             [titulo_amostra, "", ""],
