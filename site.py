@@ -5,8 +5,8 @@ import os
 from io import BytesIO
 
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
 
@@ -38,42 +38,25 @@ def cor_diagnostico(texto):
 
 def gerar_pdf_relatorio(dados):
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=35, leftMargin=35, topMargin=25, bottomMargin=25)
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=30,
+        leftMargin=30,
+        topMargin=30,
+        bottomMargin=30
+    )
 
     estilos = getSampleStyleSheet()
     elementos = []
 
-    titulo_verde = ParagraphStyle("titulo_verde", parent=estilos["Title"], textColor=colors.HexColor("#08743b"), alignment=1, fontSize=18)
-    subtitulo = ParagraphStyle("subtitulo", parent=estilos["Heading2"], alignment=1, fontSize=13)
-    header_title = ParagraphStyle("header_title", textColor=colors.white, fontName="Helvetica-Bold", fontSize=24, leading=28)
-    header_sub = ParagraphStyle("header_sub", textColor=colors.white, fontName="Helvetica", fontSize=17, leading=22)
-
-    logo_path = "assets/logo.png"
-    logo_pdf = Image(logo_path, width=65, height=65) if os.path.exists(logo_path) else ""
-
-    header_text = [
-        Paragraph("FUNDAÇÃO PROCAFÉ", header_title),
-        Paragraph("Diagnóstico Inteligente de Solo", header_sub)
-    ]
-
-    header = Table([[logo_pdf, header_text]], colWidths=[90, 420], rowHeights=[105])
-    header.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#08743b")),
-        ("ALIGN", (0, 0), (0, 0), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 18),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 18),
-    ]))
-
-    elementos.append(header)
-    elementos.append(Spacer(1, 20))
-    elementos.append(Paragraph("Fundação Procafé", titulo_verde))
-    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", subtitulo))
-    elementos.append(Spacer(1, 24))
+    elementos.append(Paragraph("Fundação Procafé", estilos["Title"]))
+    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", estilos["Heading2"]))
+    elementos.append(Spacer(1, 18))
 
     for item in dados:
-        elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
-        elementos.append(Spacer(1, 8))
+        elementos.append(Paragraph(f"Amostra {item['numero']} - {item['nome']}", estilos["Heading2"]))
 
         tabela = [
             ["Parâmetro", "Valor", "Diagnóstico"],
@@ -95,43 +78,69 @@ def gerar_pdf_relatorio(dados):
             ["B", item["b"], item["diag_b"]],
         ]
 
-        table = Table(tabela, colWidths=[150, 130, 190])
+        table = Table(tabela, colWidths=[120, 100, 180])
         table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#08743b")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-            ("GRID", (0, 0), (-1, -1), 0.4, colors.grey),
             ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f7f6f2")),
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ]))
 
         elementos.append(table)
-        elementos.append(Spacer(1, 18))
-        elementos.append(Paragraph("<b>Recomendações:</b>", estilos["Heading3"]))
+        elementos.append(Spacer(1, 12))
+
+        elementos.append(Paragraph("Recomendações:", estilos["Heading3"]))
 
         for rec in gerar_recomendacoes(item):
-            rec_pdf = rec.replace("🔴", "").replace("🟡", "").replace("🟢", "").replace("✅", "").strip()
+
+            rec_pdf = (
+                rec.replace("🔴", "")
+                   .replace("🟡", "")
+                   .replace("🟢", "")
+                   .replace("✅", "")
+                   .strip()
+            )
 
             if "PROBLEMAS CRÍTICOS" in rec_pdf:
-                elementos.append(Paragraph("<b>PROBLEMAS CRÍTICOS</b>", estilos["Heading3"]))
+
+                elementos.append(
+                    Paragraph(
+                        "<b>PROBLEMAS CRÍTICOS</b>",
+                        estilos["Heading3"]
+                    )
+                )
+
             elif "PONTOS DE ATENÇÃO" in rec_pdf:
-                elementos.append(Paragraph("<b>PONTOS DE ATENÇÃO</b>", estilos["Heading3"]))
+
+                elementos.append(
+                    Paragraph(
+                        "<b>PONTOS DE ATENÇÃO</b>",
+                        estilos["Heading3"]
+                    )
+                )
+
             elif "PONTOS POSITIVOS" in rec_pdf:
-                elementos.append(Paragraph("<b>PONTOS POSITIVOS</b>", estilos["Heading3"]))
+
+                elementos.append(
+                    Paragraph(
+                        "<b>PONTOS POSITIVOS</b>",
+                        estilos["Heading3"]
+                    )
+                )
+
             else:
-                elementos.append(Paragraph(f"- {rec_pdf}", estilos["Normal"]))
+
+                elementos.append(
+                    Paragraph(
+                        f"- {rec_pdf}",
+                        estilos["Normal"]
+                    )
+                )
 
         elementos.append(Spacer(1, 22))
 
-    rodape = Table([["Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo."]], colWidths=[500])
-    rodape.setStyle(TableStyle([
-        ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor("#08743b")),
-        ("TOPPADDING", (0, 0), (-1, -1), 10),
-        ("FONTSIZE", (0, 0), (-1, -1), 8),
-    ]))
-
-    elementos.append(rodape)
     doc.build(elementos)
     buffer.seek(0)
     return buffer
@@ -139,21 +148,23 @@ def gerar_pdf_relatorio(dados):
 
 logo_base64 = carregar_logo_base64("assets/logo.png")
 
-st.markdown("""
+st.markdown(f"""
 <style>
-.stApp {
+.stApp {{
     background:
         linear-gradient(rgba(245,239,225,0.78), rgba(245,239,225,0.86)),
         url("https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1800");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-}
-.block-container {
+}}
+
+.block-container {{
     max-width: 1180px;
     padding-top: 36px;
-}
-.hero {
+}}
+
+.hero {{
     background: linear-gradient(135deg, #064d2c, #08743b);
     border-radius: 26px;
     padding: 34px 48px;
@@ -162,145 +173,207 @@ st.markdown("""
     display: flex;
     align-items: center;
     gap: 36px;
-}
-.logo-img {
+}}
+
+.logo-img {{
     width: 155px;
     height: 155px;
     object-fit: contain;
-}
-.divider {
+}}
+
+.divider {{
     width: 2px;
     height: 120px;
     background: rgba(255,255,255,0.75);
-}
-.hero-text h1 {
+}}
+
+.hero-text h1 {{
     color: white !important;
     font-size: 50px !important;
     margin: 0;
-}
-.hero-text h3 {
+    letter-spacing: 1px;
+}}
+
+.hero-text h3 {{
     color: white !important;
     font-size: 34px !important;
     font-weight: 400;
-}
-.card {
+    margin-top: 8px;
+}}
+
+.card {{
     background: rgba(255,250,235,0.96);
     border-radius: 22px;
     padding: 32px;
     box-shadow: 0px 8px 24px rgba(0,0,0,0.18);
     margin-bottom: 26px;
-}
-.grid-row {
-    display: grid;
-    grid-template-columns: 38% 62%;
-    gap: 28px;
-    align-items: center;
-    padding: 22px 0;
-    border-bottom: 1px solid rgba(120,90,40,0.22);
-}
-.grid-row.last {
-    border-bottom: none;
-}
-.left-box {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-}
-.icon {
-    font-size: 42px;
-}
-.feature-title {
+}}
+
+.feature-title {{
     font-size: 25px;
     color: #073d25;
     font-weight: 800;
     margin-bottom: 8px;
-}
-.feature-desc {
+}}
+
+.feature-desc {{
     font-size: 17px;
     color: #25362d;
-}
-.action-box {
-    background: #eef2df;
-    border-radius: 14px;
-    padding: 24px 28px;
-    font-weight: 800;
-    color: #073d25;
-    display: flex;
-    justify-content: space-between;
-}
-section[data-testid="stFileUploader"] {
+    line-height: 1.45;
+}}
+
+section[data-testid="stFileUploader"] {{
     background: #eef2df !important;
     padding: 24px !important;
     border-radius: 14px !important;
     border: 1px solid rgba(7,92,52,0.20) !important;
-}
-section[data-testid="stFileUploader"] button {
+}}
+
+section[data-testid="stFileUploader"] label {{
+    color: #073d25 !important;
+    font-weight: 800 !important;
+}}
+
+section[data-testid="stFileUploader"] * {{
+    color: #1d2b1f !important;
+}}
+
+section[data-testid="stFileUploader"] button {{
     background: #08743b !important;
     color: white !important;
     border-radius: 12px !important;
     border: none !important;
-}
-div[data-testid="stDownloadButton"] button {
+}}
+
+section[data-testid="stFileUploader"] button * {{
+    color: white !important;
+}}
+
+div[data-testid="stDownloadButton"] button {{
     background: #08743b !important;
     color: white !important;
     border-radius: 12px !important;
     border: none !important;
     padding: 14px 22px !important;
     font-weight: 800 !important;
-}
-.footer-card {
+}}
+
+div[data-testid="stExpander"] {{
+    background: rgba(255,255,255,0.97) !important;
+    border-radius: 18px !important;
+    border: 1px solid #d8c9a5 !important;
+    overflow: hidden;
+    box-shadow: 0px 3px 14px rgba(0,0,0,0.10);
+    margin-bottom: 16px;
+}}
+
+div[data-testid="stExpander"] * {{
+    color: #1d2b1f !important;
+}}
+
+h1, h2, h3, h4, p, span, label {{
+    color: #1d2b1f !important;
+}}
+
+.footer-card {{
     background: rgba(255,250,235,0.96);
     border-radius: 18px;
     padding: 24px;
+    margin-top: 22px;
     margin-bottom: 26px;
     display: flex;
     align-items: center;
     gap: 18px;
     color: #073d25;
     font-weight: 800;
-}
-.footer-card small {
+}}
+
+.footer-card small {{
     display: block;
     font-weight: 400;
-}
-@media (max-width: 768px) {
-    .hero {
+    color: #25362d;
+    margin-top: 4px;
+}}
+
+@media (max-width: 768px) {{
+    .stApp {{
+        background-attachment: scroll;
+    }}
+
+    .hero {{
         flex-direction: column;
         text-align: center;
         padding: 26px;
-    }
-    .divider {
+    }}
+
+    .divider {{
         display: none;
-    }
-    .logo-img {
+    }}
+
+    .logo-img {{
         width: 135px;
         height: 135px;
-    }
-    .hero-text h1 {
-        font-size: 36px !important;
-    }
-    .hero-text h3 {
+    }}
+
+    .hero-text h1 {{
+        font-size: 34px !important;
+    }}
+
+    .hero-text h3 {{
         font-size: 22px !important;
-    }
-    .grid-row {
-        display: block;
-        text-align: center;
-    }
-    .left-box {
-        display: block;
-        text-align: center;
-    }
-    .action-box {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-    }
-}
+    }}
+
+    .card {{
+        padding: 22px;
+    }}
+
+    .card div[style*="grid-template-columns"] {{
+    display: block !important;
+    }}
+    
+    .card div[style*="display:flex"] {{
+        display: block !important;
+        text-align: center !important;
+    }}
+    
+    .feature-title {{
+        font-size: 26px !important;
+        text-align: center !important;
+    }}
+    
+    .feature-desc {{
+        font-size: 16px !important;
+        text-align: center !important;
+    }}
+    
+    .card div[style*="background:#eef2df"] {{
+        margin-top: 20px !important;
+        display: block !important;
+        text-align: center !important;
+    }}
+    
+    .hero {{
+        margin-top: 15px !important;
+    }}
+    
+    .hero-text h1 {{
+        font-size: 36px !important;
+        line-height: 1.15 !important;
+    }}
+    
+    .hero-text h3 {{
+        font-size: 22px !important;
+    }}
+}}
 </style>
 """, unsafe_allow_html=True)
 
 
-logo_html = f'<img src="data:image/png;base64,{logo_base64}" class="logo-img">' if logo_base64 else '<div style="font-size:80px;">🌱</div>'
+if logo_base64:
+    logo_html = f'<img src="data:image/png;base64,{logo_base64}" class="logo-img">'
+else:
+    logo_html = '<div style="font-size:80px;">🌱</div>'
+
 
 st.markdown(f"""
 <div class="hero">
@@ -316,18 +389,22 @@ st.markdown(f"""
 
 st.markdown("""
 <div class="card">
-<div class="grid-row last">
-<div class="left-box">
-<div class="icon">☁️</div>
-<div>
-<div class="feature-title">Upload do Laudo de Análise de Solo (PDF)</div>
-<div class="feature-desc">Envie o arquivo do laboratório para análise automática.</div>
-</div>
-</div>
-<div class="action-box"><span>Use o campo abaixo para arrastar ou selecionar o arquivo</span><span>PDF</span></div>
-</div>
+    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center;">
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="font-size:42px;">☁️</div>
+            <div>
+                <div class="feature-title">Upload do Laudo de Análise de Solo (PDF)</div>
+                <div class="feature-desc">Envie o arquivo do laboratório para análise automática.</div>
+            </div>
+        </div>
+        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(7,92,52,0.20);">
+            <span>Use o campo abaixo para arrastar ou selecionar o arquivo</span>
+            <span>PDF</span>
+        </div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
+
 
 arquivo = st.file_uploader(
     "Arraste e solte o arquivo aqui ou clique para selecionar",
@@ -335,47 +412,26 @@ arquivo = st.file_uploader(
     label_visibility="visible"
 )
 
+
 st.markdown("""
 <div class="card">
-<div class="grid-row">
-<div class="left-box">
-<div class="icon">▥</div>
-<div>
-<div class="feature-title">Resultados da Análise</div>
-<div class="feature-desc">Interpretação automática dos principais parâmetros do solo.</div>
-</div>
-</div>
-<div class="action-box"><span>☰ VER RESULTADOS</span><span>⌄</span></div>
-</div>
-<div class="grid-row">
-<div class="left-box">
-<div class="icon">🌿</div>
-<div>
-<div class="feature-title">Recomendações Agronômicas</div>
-<div class="feature-desc">Sugestões personalizadas para melhoria da fertilidade do solo.</div>
-</div>
-</div>
-<div class="action-box"><span>🌱 VER RECOMENDAÇÕES</span><span>⌄</span></div>
-</div>
-<div class="grid-row last">
-<div class="left-box">
-<div class="icon">📄</div>
-<div>
-<div class="feature-title">Relatório Técnico</div>
-<div class="feature-desc">Após enviar o laudo, baixe o relatório técnico completo.</div>
-</div>
-</div>
-<div class="action-box"><span>📄 RELATÓRIO PDF</span><span>⌄</span></div>
-</div>
-</div>
-<div class="footer-card">
-<div style="font-size:42px;">🛡️</div>
-<div>Tecnologia e conhecimento a serviço da cafeicultura<small>Fundação Procafé – Inovação para uma cafeicultura sustentável</small></div>
-</div>
-""", unsafe_allow_html=True)
-
+    <div style="display:grid; grid-template-columns:38% 62%; gap:28px; align-items:center; padding:22px 0; border-bottom:1px solid rgba(120,90,40,0.22);">
+        <div style="display:flex; gap:20px; align-items:flex-start;">
+            <div style="font-size:42px;">▥</div>
+            <div>
+                <div class="feature-title">Resultados da Análise</div>
+                <div class="feature-desc">Interpretação automática dos principais parâmetros do solo.</div>
+            </div>
+        </div>
+        <div style="background:#eef2df; border-radius:14px; padding:24px 28px; font-weight:800; color:#073d25; display:flex; justify-content:space-between;">
+            <span>☰ VER RESULTADOS</span>
+            <span>⌄</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 if arquivo is not None:
+
     with open("temp.pdf", "wb") as f:
         f.write(arquivo.read())
 
@@ -399,7 +455,9 @@ if arquivo is not None:
     st.markdown("## Diagnóstico das Amostras")
 
     for item in dados:
+
         with st.expander(f"🌱 {item['numero']} - {item['nome']}"):
+
             st.markdown("## Informações básicas")
 
             col1, col2, col3 = st.columns(3)
@@ -453,5 +511,7 @@ if arquivo is not None:
             st.markdown("---")
             st.markdown("## Recomendações")
 
-            for r in gerar_recomendacoes(item):
+            recomendacoes = gerar_recomendacoes(item)
+
+            for r in recomendacoes:
                 st.write("✅", r)
