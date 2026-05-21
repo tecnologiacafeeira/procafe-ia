@@ -87,7 +87,7 @@ def gerar_pdf_relatorio(dados):
     logo_path = "assets/logo.png"
 
     if os.path.exists(logo_path):
-        logo_pdf = Image(logo_path, width=58, height=58)
+        logo_pdf = Image(logo_path, width=78, height=78)
     else:
         logo_pdf = ""
 
@@ -99,7 +99,7 @@ def gerar_pdf_relatorio(dados):
     header = Table(
         [[logo_pdf, texto_header]],
         colWidths=[85, 400],
-        rowHeights=[95]
+        rowHeights=[115]
     )
 
     header.setStyle(TableStyle([
@@ -108,8 +108,8 @@ def gerar_pdf_relatorio(dados):
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 18),
         ("RIGHTPADDING", (0, 0), (-1, -1), 18),
-        ("TOPPADDING", (0, 0), (-1, -1), 14),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
+        ("TOPPADDING", (0, 0), (-1, -1), 18),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 18),
     ]))
 
     elementos.append(header)
