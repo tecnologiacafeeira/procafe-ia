@@ -116,10 +116,10 @@ def gerar_pdf_relatorio(dados):
     elementos.append(Spacer(1, 2))
 
     for item in dados:
-        elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
-        elementos.append(Spacer(1, 8))
+        titulo_amostra = f"Amostra {item['numero']} - {item['nome']}"
 
         tabela = [
+            [titulo_amostra, "", ""],
             ["Parâmetro", "Valor", "Diagnóstico"],
             ["pH H2O", item["ph_h2o"], item["diag_ph"]],
             ["pH CaCl2", item["ph_cacl2"], ""],
@@ -141,10 +141,18 @@ def gerar_pdf_relatorio(dados):
 
         table = Table(tabela, colWidths=[140, 120, 180])
         table.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#08743b")),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+            ("SPAN", (0, 0), (-1, 0)),
+            ("ALIGN", (0, 0), (-1, 0), "CENTER"),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f7f6f2")),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, 0), 14),
+            ("TOPPADDING", (0, 0), (-1, 0), 10),
+            ("BOTTOMPADDING", (0, 0), (-1, 0), 10),
+            ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#08743b")),
+            ("TEXTCOLOR", (0, 1), (-1, 1), colors.white),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+            ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
             ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f7f6f2")),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("TOPPADDING", (0, 0), (-1, -1), 6),
