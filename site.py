@@ -181,7 +181,7 @@ def gerar_pdf_relatorio(dados):
 
     rodape = Table(
         [[Paragraph(
-        "Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo.",
+        "Observação: As recomendações apresentadas neste relatório são automáticas e possuem caráter orientativo inicial. A definição final de corretivos e fertilizantes deve considerar produtividade esperada, histórico da área, textura do solo, manejo adotado e avaliação de um engenheiro agrônomo responsável.",
         estilos["Normal"]
         )]],
         colWidths=[520]
@@ -190,7 +190,8 @@ def gerar_pdf_relatorio(dados):
     rodape.setStyle(TableStyle([
         ("LINEABOVE", (0, 0), (-1, 0), 2, colors.HexColor("#08743b")),
         ("TOPPADDING", (0, 0), (-1, -1), 10),
-        ("FONTSIZE", (0, 0), (-1, -1), 8),
+        ("FONTSIZE", (0, 0), (-1, -1), 9),
+        ("WORDWRAP", (0, 0), (-1, -1), "LTR"),
     ]))
 
     elementos.append(rodape)
