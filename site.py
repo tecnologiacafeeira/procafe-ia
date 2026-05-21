@@ -103,8 +103,8 @@ def gerar_pdf_relatorio(dados):
 
     header = Table(
         [[logo_pdf, texto_header]],
-        colWidths=[95, 470],
-        rowHeights=[74]
+        colWidths=[110, 455],
+        rowHeights=[90]
     )
 
     header.setStyle(TableStyle([
