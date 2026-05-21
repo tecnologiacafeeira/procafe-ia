@@ -5,7 +5,7 @@ import os
 from io import BytesIO
 
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 
@@ -175,6 +175,9 @@ def gerar_pdf_relatorio(dados):
                 elementos.append(Paragraph(f"- {rec_pdf}", estilos["Normal"]))
 
         elementos.append(Spacer(1, 22))
+
+        if item != dados[-1]:
+            elementos.append(PageBreak())
 
     rodape = Table(
         [["Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo."]],
