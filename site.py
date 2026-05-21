@@ -55,16 +55,16 @@ def gerar_pdf_relatorio(dados):
         "header_title",
         textColor=colors.white,
         fontName="Helvetica-Bold",
-        fontSize=23,
-        leading=27
+        fontSize=18,
+        leading=20
     )
 
     header_sub = ParagraphStyle(
         "header_sub",
         textColor=colors.white,
         fontName="Helvetica",
-        fontSize=16,
-        leading=20
+        fontSize=12,
+        leading=14
     )
 
     titulo_verde = ParagraphStyle(
@@ -98,8 +98,8 @@ def gerar_pdf_relatorio(dados):
 
     header = Table(
         [[logo_pdf, texto_header]],
-        colWidths=[85, 400],
-        rowHeights=[115]
+        colWidths=[80, 340],
+        rowHeights=[78]
     )
 
     header.setStyle(TableStyle([
@@ -108,8 +108,8 @@ def gerar_pdf_relatorio(dados):
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 18),
         ("RIGHTPADDING", (0, 0), (-1, -1), 18),
-        ("TOPPADDING", (0, 0), (-1, -1), 18),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 18),
+        ("TOPPADDING", (0, 0), (-1, -1), 10),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
     ]))
 
     elementos.append(header)
