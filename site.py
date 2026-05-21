@@ -180,8 +180,11 @@ def gerar_pdf_relatorio(dados):
             elementos.append(PageBreak())
 
     rodape = Table(
-        [["Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo."]],
-        colWidths=[500]
+        [[Paragraph(
+        "Observação: recomendações automáticas iniciais. A dose final de corretivos e fertilizantes deve considerar produtividade esperada, textura do solo, histórico da área e orientação de um engenheiro agrônomo.",
+        estilos["Normal"]
+        )]],
+        colWidths=[520]
     )
 
     rodape.setStyle(TableStyle([
