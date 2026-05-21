@@ -249,8 +249,8 @@ st.markdown(f"""
 }}
 
 .logo-img {{
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     object-fit: contain;
 }}
 
