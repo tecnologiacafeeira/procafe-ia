@@ -42,9 +42,9 @@ def gerar_pdf_relatorio(dados):
     doc = SimpleDocTemplate(
         buffer,
         pagesize=A4,
-        rightMargin=30,
-        leftMargin=30,
-        topMargin=8,
+        rightMargin=5,
+        leftMargin=5,
+        topMargin=2,
         bottomMargin=25
     )
 
@@ -98,16 +98,16 @@ def gerar_pdf_relatorio(dados):
 
     header = Table(
         [[logo_pdf, texto_header]],
-        colWidths=[80, 340],
-        rowHeights=[78]
+        colWidths=[95, 470],
+        rowHeights=[74]
     )
 
     header.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#08743b")),
         ("ALIGN", (0, 0), (0, 0), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 18),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 18),
+        ("LEFTPADDING", (0, 0), (-1, -1), 12),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 12),
         ("TOPPADDING", (0, 0), (-1, -1), 4),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]))
