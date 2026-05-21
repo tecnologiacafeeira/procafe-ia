@@ -89,7 +89,7 @@ def gerar_pdf_relatorio(dados):
     if os.path.exists(logo_path):
         logo_pdf = Image(
             logo_path,
-            width=93,
+            width=94,
             height=92,
             mask='auto'
         )
