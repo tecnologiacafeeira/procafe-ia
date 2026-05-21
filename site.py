@@ -142,6 +142,7 @@ def gerar_pdf_relatorio(dados):
         table = Table(tabela, colWidths=[140, 120, 180])
         table.setStyle(TableStyle([
             ("SPAN", (0, 0), (-1, 0)),
+            ("BOX", (0, 0), (-1, 0), 0.5, colors.grey),
             ("ALIGN", (0, 0), (-1, 0), "CENTER"),
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f7f6f2")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
@@ -156,7 +157,7 @@ def gerar_pdf_relatorio(dados):
             
             ("TOPPADDING", (0, 1), (-1, 1), 0),
             
-            ("GRID", (0, 1), (-1, -1), 0.5, colors.grey),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
             ("BACKGROUND", (0, 2), (-1, -1), colors.HexColor("#f7f6f2")),
         ]))
 
