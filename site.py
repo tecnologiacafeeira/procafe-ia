@@ -147,16 +147,17 @@ def gerar_pdf_relatorio(dados):
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
             ("FONTSIZE", (0, 0), (-1, 0), 14),
+            
             ("TOPPADDING", (0, 0), (-1, 0), 10),
-            ("BOTTOMPADDING", (0, 0), (-1, 0), 10),
+            ("BOTTOMPADDING", (0, 0), (-1, 0), 2),
+            
             ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#08743b")),
             ("TEXTCOLOR", (0, 1), (-1, 1), colors.white),
-            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-            ("FONTNAME", (0, 1), (-1, 1), "Helvetica-Bold"),
-            ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f7f6f2")),
-            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+            
+            ("TOPPADDING", (0, 1), (-1, 1), 0),
+            
+            ("GRID", (0, 1), (-1, -1), 0.5, colors.grey),
+            ("BACKGROUND", (0, 2), (-1, -1), colors.HexColor("#f7f6f2")),
         ]))
 
         elementos.append(table)
