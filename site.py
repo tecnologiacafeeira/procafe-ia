@@ -582,4 +582,11 @@ if arquivo is not None:
             recomendacoes = gerar_recomendacoes(item)
 
             for r in recomendacoes:
-                st.write("✅", r)
+                if (
+                    "PROBLEMAS CRÍTICOS" in r
+                    or "PONTOS DE ATENÇÃO" in r
+                    or "PONTOS POSITIVOS" in r
+                ):
+                    st.write(r)
+                else:
+                    st.write("✅", r)
