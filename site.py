@@ -44,7 +44,7 @@ def gerar_pdf_relatorio(dados):
         pagesize=A4,
         rightMargin=30,
         leftMargin=30,
-        topMargin=25,
+        topMargin=8,
         bottomMargin=25
     )
 
@@ -108,12 +108,12 @@ def gerar_pdf_relatorio(dados):
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("LEFTPADDING", (0, 0), (-1, -1), 18),
         ("RIGHTPADDING", (0, 0), (-1, -1), 18),
-        ("TOPPADDING", (0, 0), (-1, -1), 10),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 10),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]))
 
     elementos.append(header)
-    elementos.append(Spacer(1, 20))
+    elementos.append(Spacer(1, 2))
 
     for item in dados:
         elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
