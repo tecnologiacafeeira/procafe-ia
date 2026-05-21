@@ -55,16 +55,16 @@ def gerar_pdf_relatorio(dados):
         "header_title",
         textColor=colors.white,
         fontName="Helvetica-Bold",
-        fontSize=18,
-        leading=20
+        fontSize=26,
+        leading=28
     )
 
     header_sub = ParagraphStyle(
         "header_sub",
         textColor=colors.white,
         fontName="Helvetica",
-        fontSize=12,
-        leading=14
+        fontSize=16,
+        leading=18
     )
 
     titulo_verde = ParagraphStyle(
