@@ -115,10 +115,6 @@ def gerar_pdf_relatorio(dados):
     elementos.append(header)
     elementos.append(Spacer(1, 20))
 
-    elementos.append(Paragraph("Fundação Procafé", titulo_verde))
-    elementos.append(Paragraph("Relatório Técnico - Diagnóstico Inteligente de Solo", subtitulo))
-    elementos.append(Spacer(1, 22))
-
     for item in dados:
         elementos.append(Paragraph(f"<b>Amostra {item['numero']} - {item['nome']}</b>", estilos["Heading2"]))
         elementos.append(Spacer(1, 8))
