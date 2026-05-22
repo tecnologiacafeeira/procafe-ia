@@ -369,14 +369,25 @@ h1, h2, h3, h4, p, span, label {{
 }}
 
 @media (max-width: 768px) {{
+
     .stApp {{
         background-attachment: scroll;
+    }}
+
+    .block-container {{
+        padding-top: 18px;
+        padding-left: 14px;
+        padding-right: 14px;
     }}
 
     .hero {{
         flex-direction: column;
         text-align: center;
-        padding: 26px;
+        padding: 24px 18px;
+        gap: 14px;
+        border-radius: 22px;
+        margin-top: 8px !important;
+        margin-bottom: 18px;
     }}
 
     .divider {{
@@ -384,59 +395,57 @@ h1, h2, h3, h4, p, span, label {{
     }}
 
     .logo-img {{
-        width: 135px;
-        height: 135px;
+        width: 115px;
+        height: 115px;
     }}
 
     .hero-text h1 {{
-        font-size: 34px !important;
+        font-size: 30px !important;
+        line-height: 1.12 !important;
+        margin-top: 4px !important;
     }}
 
     .hero-text h3 {{
-        font-size: 22px !important;
+        font-size: 19px !important;
+        line-height: 1.25 !important;
+        margin-top: 8px !important;
     }}
 
     .card {{
-        padding: 22px;
+        padding: 20px;
+        border-radius: 18px;
     }}
 
     .card div[style*="grid-template-columns"] {{
-    display: block !important;
+        display: block !important;
     }}
-    
+
     .card div[style*="display:flex"] {{
         display: block !important;
         text-align: center !important;
     }}
-    
+
     .feature-title {{
-        font-size: 26px !important;
+        font-size: 24px !important;
         text-align: center !important;
     }}
-    
+
     .feature-desc {{
         font-size: 16px !important;
         text-align: center !important;
     }}
-    
+
     .card div[style*="background:#eef2df"] {{
-        margin-top: 20px !important;
+        margin-top: 18px !important;
         display: block !important;
         text-align: center !important;
+        padding: 18px !important;
     }}
-    
-    .hero {{
-        margin-top: 15px !important;
+
+    .upload-title {{
+        font-size: 1.5rem !important;
     }}
-    
-    .hero-text h1 {{
-        font-size: 36px !important;
-        line-height: 1.15 !important;
-    }}
-    
-    .hero-text h3 {{
-        font-size: 22px !important;
-    }}
+
 }}
 </style>
 """, unsafe_allow_html=True)
