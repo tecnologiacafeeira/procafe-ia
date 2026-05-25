@@ -293,6 +293,11 @@ st.markdown(f"""
     margin-bottom: 26px;
 }}
 
+.table-wrapper {{
+    overflow-x: auto;
+    width: 100%;
+}}
+
 .feature-title {{
     font-size: 25px;
     color: #073d25;
