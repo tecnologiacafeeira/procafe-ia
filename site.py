@@ -446,6 +446,29 @@ h1, h2, h3, h4, p, span, label {{
         font-size: 1.5rem !important;
     }}
 
+        div[data-testid="column"] {{
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }}
+    
+    div[data-testid="stDownloadButton"] button {{
+        width: 100% !important;
+        font-size: 16px !important;
+        padding: 16px !important;
+    }}
+    
+    div[data-testid="stExpander"] {{
+        margin-bottom: 14px !important;
+    }}
+    
+    h2 {{
+        font-size: 24px !important;
+    }}
+    
+    h3 {{
+    font-size: 20px !important;
+}}
+
 }}
 </style>
 """, unsafe_allow_html=True)
