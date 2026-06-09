@@ -484,9 +484,9 @@ h1, h2, h3, h4, p, span, label {{
     }}
 
         div[data-testid="column"] {{
-        width: 100% !important;
-        flex: 1 1 100% !important;
-    }}
+            width: 100% !important;
+            flex: 1 1 100% !important;
+        }}
     
     div[data-testid="stDownloadButton"] button {{
         width: 100% !important;
@@ -503,8 +503,8 @@ h1, h2, h3, h4, p, span, label {{
     }}
     
     h3 {{
-    font-size: 20px !important;
-}}
+        font-size: 20px !important;
+    }}
 
 }}
 </style>
