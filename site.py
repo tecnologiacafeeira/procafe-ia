@@ -248,6 +248,27 @@ st.markdown(f"""
     padding-top: 36px;
 }}
 
+section.main > div {{
+    padding-top: 0rem !important;
+    max-width: 100% !important;
+}}
+
+header[data-testid="stHeader"] {{
+    display: none;
+}}
+
+#MainMenu {{
+    visibility: hidden;
+}}
+
+footer {{
+    visibility: hidden;
+}}
+
+div[data-testid="stToolbar"] {{
+    display: none !important;
+}}
+
 .hero {{
     background: linear-gradient(135deg, #064d2c, #08743b);
     border-radius: 26px;
